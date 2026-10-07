@@ -222,7 +222,8 @@ Melakukan simulasi dan praktik alur kerja kolaborasi proyek open-source/tim di G
    ![SS Git Push Branch](tempel_SS_di_sini)
 5. **Membuat & Menggabungkan Pull Request (PR):**
    Mengajukan *Pull Request* pada halaman GitHub dan melakukan proses *Merge* perubahan ke branch utama.
-   ![SS Pull Request dan Merge](tempel_SS_di_sini)
+  <img width="959" height="500" alt="image" src="https://github.com/user-attachments/assets/82aaa849-933a-423e-bf44-31d35bba6d0b" />
+
 
 ---
 
