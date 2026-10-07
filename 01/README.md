@@ -203,7 +203,7 @@ Membuat dan mengelola repository di bawah naungan Organisasi GitHub:
 
 ---
 
-#5. Kolaborasi & Workflow GitHub (`04-kolaborasi.md`)
+# 5. Kolaborasi & Workflow GitHub (`04-kolaborasi.md`)
 Melakukan simulasi dan praktik alur kerja kolaborasi proyek open-source/tim di GitHub:
 1. **Fork Repository:**
    Membuat duplikasi (*fork*) dari repository pengguna lain/utama ke akun pribadi.
