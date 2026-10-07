@@ -207,19 +207,23 @@ Membuat dan mengelola repository di bawah naungan Organisasi GitHub:
 Melakukan simulasi dan praktik alur kerja kolaborasi proyek open-source/tim di GitHub:
 1. **Fork Repository:**
    Membuat duplikasi (*fork*) dari repository pengguna lain/utama ke akun pribadi.
-   ![SS Fork Repository](tempel_SS_di_sini)
+ <img width="577" height="303" alt="image" src="https://github.com/user-attachments/assets/c8c2a158-3e4c-4366-956e-6ea6c1c7abec" />
+
 2. **Clone Repository Lokal:**
    Mendownload repository hasil fork ke komputer lokal.
    * Perintah: `git clone <URL_Repository>`
-   ![SS Git Clone](tempel_SS_di_sini)
+   <img width="571" height="234" alt="image" src="https://github.com/user-attachments/assets/c43e90bf-52d4-471c-a8cd-83421acc2efc" />
+
 3. **Membuat Branch Baru:**
    Membuat dan berpindah ke cabang fitur (*feature branch*) baru untuk pengerjaan tugas.
    * Perintah: `git checkout -b fitur-baru`
-   ![SS Git Branch](tempel_SS_di_sini)
+  <img width="575" height="140" alt="image" src="https://github.com/user-attachments/assets/c06215d7-840d-4511-8524-f0867c561b79" />
+
 4. **Push Changes ke Remote Branch:**
    Mengunggah perubahan dari branch lokal ke GitHub.
    * Perintah: `git push origin fitur-baru`
-   ![SS Git Push Branch](tempel_SS_di_sini)
+  <img width="579" height="239" alt="image" src="https://github.com/user-attachments/assets/ce8fa92b-320f-444d-9dc9-f59ac0526320" />
+
 5. **Membuat & Menggabungkan Pull Request (PR):**
    Mengajukan *Pull Request* pada halaman GitHub dan melakukan proses *Merge* perubahan ke branch utama.
   <img width="959" height="500" alt="image" src="https://github.com/user-attachments/assets/82aaa849-933a-423e-bf44-31d35bba6d0b" />
