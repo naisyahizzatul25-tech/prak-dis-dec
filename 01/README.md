@@ -231,11 +231,5 @@ Melakukan simulasi dan praktik alur kerja kolaborasi proyek open-source/tim di G
 
 ---
 
-### D. Hasil Praktikum & Link Pengumpulan
-* **URL Repository Utama:** `https://github.com/naisyah-jannah22/prak-dis-dec`
-* **URL Laporan Minggu 1:** `https://github.com/naisyah-jannah22/prak-dis-dec/tree/main/01`
-
----
-
 ### E. Kesimpulan
-Praktikum minggu ke-1 telah berhasil menyelesaikan seluruh alur kerja Git dan GitHub, mulai dari instalasi bertahap, konfigurasi identitas pengguna, pengelolaan repository lokal pada akun pribadi maupun organisasi, hingga alur kerja kolaborasi terdistribusi (*fork*, *clone*, *branching*, dan *pull request*).
+Praktikum minggu ke-1 telah berhasil menyelesaikan seluruh alur kerja Git dan GitHub, mulai dari instalasi bertahap, konfigurasi identitas pengguna, pengelolaan repository lokal pada akun pribadi maupun organisasi, hingga alur kerja kolaborasi terdistribusi (*fork*, *clone*, *branching*, dan *pull request*). 
