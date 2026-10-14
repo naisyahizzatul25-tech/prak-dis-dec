@@ -67,10 +67,10 @@ ls -la
 ##### 1. Inisialisasi Direktori Kerja / Workspace (Nomor 1)
 - **Tujuan:** Membuat direktori proyek terisolasi bernama `workspace-01` untuk menyimpan seluruh berkas server GraphQL[cite: 1].
 - **Perintah Terminal:**
-```bash
+bash
 mkdir workspace-01
 cd workspace-01
-[cite: 1]
+
 - **Penjelasan:** Perintah `mkdir` membuat direktori baru, dan `cd` digunakan untuk berpindah ke dalam lokasi direktori tersebut[cite: 1].
 - **Bukti Praktikum:**
   <img width="800" alt="Inisialisasi Workspace" src="images/04-workspace-uv-venv.png" />[cite: 1, 6]
