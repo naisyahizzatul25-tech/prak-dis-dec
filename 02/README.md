@@ -42,9 +42,9 @@
 ##### 3. Pemantauan Proses Sistem Secara Real-Time dengan `htop` (Nomor 3)
 - **Tujuan:** Memantau penggunaan sumber daya hardware (CPU, RAM, Swap) serta daftar proses aktif di terminal Ubuntu[cite: 1].
 - **Perintah Terminal:**
-```bash
+  bash
 htop
-```[cite: 1]
+[cite: 1]
 - **Penjelasan:** Perintah `htop` menampilkan statistik penggunaan CPU per inti (*core*), persentase konsumsi memori, serta rincian proses aktif beserta PID dan penggunaan CPU/RAM masing-masing[cite: 1].
 - **Bukti Praktikum:**
   <img width="800" alt="Pemantauan Proses htop" src="images/02-htop.png" />[cite: 1, 6]
