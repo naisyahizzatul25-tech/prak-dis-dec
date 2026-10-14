@@ -2,9 +2,9 @@
 ## Modul: Manajemen Proses Linux (WSL) & Implementasi GraphQL Server
 
 ### Identitas Mahasiswa
-- **Nama:** Naisyah Izzatul Jannah K.[cite: 1]
-- **NIM:** 255410040[cite: 1]
-- **Kelas:** Informatika IF 1 (Semester 3)[cite: 1]
+- **Nama:** Naisyah Izzatul Jannah K.
+- **NIM:** 255410040
+- **Kelas:** Informatika IF 1 (Semester 3)
 - **Universitas:** Universitas Teknologi Digital Indonesia (UTDI)[cite: 1]
 
 ---
@@ -43,7 +43,7 @@
 - **Tujuan:** Memantau penggunaan sumber daya hardware (CPU, RAM, Swap) serta daftar proses aktif di terminal Ubuntu[cite: 1].
 - **Perintah Terminal:**
   
-```[cite: 1]
+
 - **Penjelasan:** Perintah `htop` menampilkan statistik penggunaan CPU per inti (*core*), persentase konsumsi memori, serta rincian proses aktif beserta PID dan penggunaan CPU/RAM masing-masing[cite: 1].
 - **Bukti Praktikum:**
   <img width="800" alt="Pemantauan Proses htop" src="images/02-htop.png" />[cite: 1, 6]
