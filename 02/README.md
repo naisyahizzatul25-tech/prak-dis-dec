@@ -1,5 +1,5 @@
 # Laporan Praktikum Sistem Terdistribusi dan Terdesentralisasi
-## Minggu 02: Manajemen Proses Linux (WSL) dan Implementasi GraphQL Server
+## Minggu 02: Komunikasi Antar Proses pada Sistem Terdistribusi
 
 ### Identitas Mahasiswa
 * **Nama:** Naisyah Izzatul Jannah K.
@@ -9,74 +9,92 @@
 ---
 
 ### A. Tujuan
-1. Memahami dan mengonfigurasi lingkungan Linux di Windows menggunakan *Windows Subsystem for Linux* (WSL) serta memantau proses sistem secara *real-time* dengan `htop`.
-2. Membangun server API modern berbasis **GraphQL** menggunakan Python dan pustaka `strawberry-graphql`.
-3. Mengelola *virtual environment* dan dependensi dengan `uv`, serta menguji kueri API melalui *GraphiQL Playground*.
+1. Memahami konsep proses pada satu *node* yang dikelola oleh sistem operasi, serta cara menampilkan, menjalankan, me-*restart*, dan mematikan proses.
+2. Memahami perbedaan komunikasi antar proses pada satu *node* dengan komunikasi antar proses pada sistem terdistribusi.
+3. Membangun GraphQL server menggunakan Python (paket Strawberry) dengan `uv`, lalu mengujinya melalui GraphiQL.
 
 ---
 
 ### B. Dasar Teori
-* **WSL (Windows Subsystem for Linux)** adalah fitur Windows yang memungkinkan pengembang menjalankan lingkungan Linux dan utilitas baris perintahnya langsung tanpa mesin virtual yang berat.
-* **GraphQL** adalah bahasa kueri untuk API yang memungkinkan klien menentukan struktur data yang dibutuhkan secara presisi, sehingga menghindari *over-fetching*.
-* **Strawberry GraphQL** adalah *framework* Python yang memanfaatkan *type hints* standar untuk mendefinisikan skema, kueri, dan resolver GraphQL.
+* **Proses** adalah hasil eksekusi program/aplikasi yang bersifat *executable*. Proses dikelola oleh sistem operasi dan terdiri atas *executable code*, data, *resources*, serta informasi *state* (*stack* dan *heap*).
+* **Proses pada satu node** sepenuhnya berada dalam kendali sistem operasi (eksekusi, alokasi *resources*, pengelolaan, dan komunikasi antar proses) dan bersifat transparan bagi pengguna. Semua proses berjalan pada *clock* yang sama dan dapat memakai *shared memory*.
+* **Komunikasi antar proses pada sistem terdistribusi** berbeda karena antar *node* tidak berbagi *clock* maupun *shared memory*, sehingga dibutuhkan mekanisme khusus. Salah satunya **GraphQL**, di mana server melayani *query* dari *client* sesuai spesifikasi GraphQL dan kedua sisi dapat dikembangkan dengan peranti yang berbeda.
+* **Strawberry** adalah paket Python untuk membuat GraphQL server. **uv** adalah pengelola paket dan *virtual environment* Python.
 
 ---
 
 ### C. Langkah Kerja & Bukti Praktikum
 
-## BAGIAN I: Manajemen Proses Linux & Lingkungan WSL
+## BAGIAN I: Proses pada Satu Node
 
-#### 1. Instalasi & Inisialisasi WSL
-Mengunduh, memasang, dan memverifikasi Linux Ubuntu pada Windows menggunakan WSL melalui antarmuka baris perintah Windows.
-<img width="800" alt="Instalasi WSL" src="https://github.com/user-attachments/assets/1191c5f4-395a-4224-85d0-722c24f4c127" />
+#### 0. Persiapan Lingkungan Linux (WSL)
+Praktikum dikerjakan di Ubuntu pada Windows menggunakan WSL, dimulai dengan pengunduhan dan pemasangan WSL.
+<img width="800" alt="Download WSL" src="images/01-wsl-download.png" />
 
-#### 2. Pengenalan Utilitas Sistem & Kernel Linux
-Membaca informasi sistem dan panduan antarmuka WSL untuk memahami pengelolaan memori, instruksi CPU, dan penomoran proses (*Process ID / PID*) oleh kernel Linux.
-<img width="800" alt="Welcome to WSL" src="https://github.com/user-attachments/assets/a8b77bd2-fc73-4c0b-99bf-fcce36cb4747" />
+Setelah terpasang, muncul jendela *Welcome to Windows Subsystem for Linux*.
+<img width="800" alt="Welcome to WSL" src="images/03-welcome-wsl.png" />
 
-#### 3. Pemantauan Proses dengan `htop`
-Memantau penggunaan CPU per inti, RAM, Swap, serta daftar proses aktif beserta PID-nya.
+#### 1. Menampilkan Proses yang Ada pada Komputer
+Menampilkan seluruh proses pada Linux (WSL) menggunakan `htop`, berisi penggunaan CPU per inti, memori, *swap*, serta daftar proses lengkap dengan PID, pengguna, dan perintah yang dijalankan.
    * Perintah: `htop`
 
-   <img width="800" alt="htop" src="TEMPEL_URL_GAMBAR_DI_SINI" />
+<img width="800" alt="Daftar proses htop" src="images/02-htop.png" />
 
-#### 4. Navigasi Awal & Kesiapan Terminal
-Memastikan terminal WSL aktif dan posisi direktori berada di lingkungan Linux sebelum membuat folder proyek.
-   * Perintah: `pwd` dan `ls -la`
+#### 2. Menjalankan Aplikasi dan Melihat Proses yang Dimunculkan
+Menjalankan salah satu aplikasi, lalu mencari proses yang dimunculkannya melalui `htop` (atau `ps`).
+   * Aplikasi yang dijalankan: **(isi nama aplikasi)**
+   * Perintah: `ps aux | grep <nama-aplikasi>`
 
-   <img width="800" alt="navigasi terminal" src="TEMPEL_URL_GAMBAR_DI_SINI" />
+<img width="800" alt="Proses aplikasi yang dijalankan" src="TEMPEL_URL_GAMBAR_DI_SINI" />
+
+#### 3. Me-restart dan Mematikan Proses
+Petunjuk yang digunakan:
+   * **Mematikan proses:** `kill <PID>` (sinyal SIGTERM, meminta proses berhenti dengan baik). Jika tidak mau berhenti: `kill -9 <PID>` (SIGKILL, paksa berhenti). Alternatif: `pkill <nama-proses>`, atau di `htop` pilih proses lalu tekan `F9` (Kill).
+   * **Me-restart proses:** Proses biasa dimatikan lalu dijalankan kembali. Untuk layanan (*service*) digunakan `sudo systemctl restart <nama-service>`, sedangkan `kill -HUP <PID>` meminta proses membaca ulang konfigurasinya.
+
+Proses dari aplikasi yang dijalankan dimatikan menggunakan perintah `kill` (bukan perintah keluar dari aplikasi):
+
+<img width="800" alt="Mematikan proses dengan kill" src="TEMPEL_URL_GAMBAR_DI_SINI" />
+
+#### 4. Penjelasan
+Aplikasi yang dijalankan otomatis menjadi proses yang diberi PID oleh kernel dan tampil pada `htop`. Proses tersebut dimatikan dengan mengirim sinyal ke PID-nya, sehingga sistem operasi menghentikan proses tanpa melalui menu keluar aplikasi. Seluruh pengelolaan ini ditangani sistem operasi pada satu *node* dan bersifat transparan bagi pengguna.
 
 ---
 
-## BAGIAN II: Membangun GraphQL Server dengan `strawberry-graphql`
+## BAGIAN II: Komunikasi Antar Proses pada Sistem Terdistribusi (GraphQL Server dengan Strawberry)
 
-#### 1. Membuat Direktori Kerja
-Membuat direktori proyek terisolasi bernama `workspace-01` untuk menyimpan seluruh berkas server.
-   * Perintah: `mkdir workspace-01` lalu `cd workspace-01`
+#### 1. Mempelajari `uv` dan Membuat Workspace `workspace-01`
+Membuat workspace bernama `workspace-01`, lalu berpindah ke dalamnya.
+   * Perintah: `mkdir workspace-01`
+   * Perintah: `cd workspace-01`
 
-   <img width="800" alt="pembuatan direktori" src="TEMPEL_URL_GAMBAR_DI_SINI" />
+Saat `uv` dijalankan, muncul pesan `uv: command not found` karena `uv` belum terpasang, sehingga `uv` dipasang terlebih dahulu.
+   * Perintah: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+   * Perintah: `source $HOME/.local/bin/env` (menambahkan `uv` ke PATH)
 
-#### 2. Membuat & Mengaktifkan Virtual Environment dengan `uv`
-Mengisolasi dependensi Python proyek agar tidak mengganggu sistem utama.
+<img width="800" alt="Workspace dan instalasi uv" src="images/04-workspace-uv-venv.png" />
+
+#### 2. Membuat dan Mengaktifkan Environment
+`uv` menggunakan Python 3.14.4 yang ada pada sistem (`/usr/bin/python3`) untuk membuat *virtual environment* di `.venv`, lalu environment diaktifkan (muncul penanda `(workspace-01)` pada *prompt*).
    * Perintah: `uv venv`
    * Perintah: `source .venv/bin/activate`
 
-   <img width="800" alt="aktivasi venv" src="TEMPEL_URL_GAMBAR_DI_SINI" />
+<img width="800" alt="Membuat dan mengaktifkan venv" src="images/04-workspace-uv-venv.png" />
 
-#### 3. Instalasi Pustaka `strawberry-graphql`
-Memasang Strawberry GraphQL beserta CLI, server ASGI `uvicorn`, dan dependensi pendukungnya.
+#### 3. Instalasi Paket yang Diperlukan
+Memasang Strawberry GraphQL beserta CLI. Sebanyak 24 paket terpasang, di antaranya `strawberry-graphql`, `graphql-core`, `starlette`, dan `uvicorn`.
    * Perintah: `uv pip install 'strawberry-graphql[cli]'`
 
-   <img width="800" alt="instalasi" src="TEMPEL_URL_GAMBAR_DI_SINI" />
+<img width="800" alt="Instalasi strawberry-graphql" src="images/05-install-strawberry.png" />
 
 #### 4. Membuat Berkas `schema.py`
-Membuka editor teks `nano` untuk membuat berkas skema server.
+Membuka editor `nano` untuk menulis source code server.
    * Perintah: `nano schema.py`
 
-   <img width="800" alt="editor nano" src="TEMPEL_URL_GAMBAR_DI_SINI" />
+<img width="800" alt="nano schema.py kosong" src="images/06-nano-kosong.png" />
 
-#### 5. Menulis Kode Skema GraphQL
-Mendefinisikan tipe data `Book` dan *root query* untuk menyajikan data sampel buku.
+#### 5. Menuliskan Source Code `schema.py`
+Mendefinisikan tipe `Book`, *root query* `books`, dan skema GraphQL.
 
 ```python
 import strawberry
@@ -102,21 +120,25 @@ schema = strawberry.Schema(query=Query)
 
    * `@strawberry.type class Book`: tipe objek GraphQL dengan atribut `title` dan `author` bertipe string.
    * `@strawberry.type class Query`: titik masuk kueri utama.
-   * `def books(...) -> list[Book]`: *resolver* yang mengembalikan daftar data buku tiruan (*mock data*).
-   * `strawberry.Schema(query=Query)`: menggabungkan tipe dan kueri menjadi skema GraphQL aktif.
+   * `def books(...) -> list[Book]`: *resolver* yang mengembalikan daftar data buku.
+   * `strawberry.Schema(query=Query)`: menggabungkan tipe dan kueri menjadi skema GraphQL.
 
-   <img width="800" alt="kode sumber" src="TEMPEL_URL_GAMBAR_DI_SINI" />
+<img width="800" alt="Source code schema.py" src="images/07-nano-kode.png" />
 
-#### 6. Menjalankan Server Pengembangan
-Menjalankan server lokal agar API menerima permintaan HTTP di `http://localhost:8000/graphql`.
+Berkas disimpan dengan `Ctrl+O` (*Write Out*), lalu keluar dengan `Ctrl+X`.
+
+<img width="800" alt="Menyimpan schema.py" src="images/08-nano-simpan.png" />
+
+#### 6. Menjalankan Server
+Menjalankan server pengembangan Strawberry, yang dapat diakses di `http://localhost:8000/graphql` (alamat `0.0.0.0` dapat diganti `localhost` atau `127.0.0.1`).
    * Perintah: `strawberry dev schema`
 
-   <img width="800" alt="server berjalan" src="TEMPEL_URL_GAMBAR_DI_SINI" />
+<img width="800" alt="Server strawberry berjalan" src="TEMPEL_URL_GAMBAR_DI_SINI" />
 
-#### 7. Pengujian Kueri di GraphiQL Playground
-Mengeksekusi kueri melalui peramban untuk menguji keabsahan API.
+#### 7. Menjalankan Query di GraphiQL
+Membuka `http://localhost:8000/graphql` di peramban. Bagian kiri untuk menuliskan *query*, bagian kanan menampilkan hasil. Query dijalankan dengan tombol *Run*.
 
-Kueri:
+Query:
 ```graphql
 {
   books {
@@ -126,7 +148,7 @@ Kueri:
 }
 ```
 
-Respons JSON:
+Hasil:
 ```json
 {
   "data": {
@@ -140,9 +162,43 @@ Respons JSON:
 }
 ```
 
-   <img width="800" alt="Playground & JSON Response" src="TEMPEL_URL_GAMBAR_DI_SINI" />
+<img width="800" alt="Hasil query di GraphiQL" src="images/09-graphiql-hasil.png" />
+
+Server dimatikan dengan menekan `Ctrl+C` pada *shell* tempat `strawberry` dijalankan.
+
+---
+
+## TUGAS: Client untuk GraphQL Server
+Membuat *client* dengan Python (hanya pustaka standar) yang mengirim *query* ke GraphQL server di atas. Server harus berjalan terlebih dahulu (`strawberry dev schema`), lalu *client* dijalankan di terminal lain.
+
+Berkas `client.py`:
+```python
+import json
+import urllib.request
+
+URL = "http://localhost:8000/graphql"
+QUERY = "{ books { title author } }"
+
+request = urllib.request.Request(
+    URL,
+    data=json.dumps({"query": QUERY}).encode("utf-8"),
+    headers={"Content-Type": "application/json"},
+)
+
+with urllib.request.urlopen(request) as response:
+    result = json.load(response)
+
+for book in result["data"]["books"]:
+    print(f'{book["title"]} - {book["author"]}')
+```
+
+   * Perintah: `python client.py`
+
+<img width="800" alt="Hasil client GraphQL" src="TEMPEL_URL_GAMBAR_DI_SINI" />
+
+*Client* (peminta layanan) dan server (pelayan) merupakan dua proses terpisah yang berkomunikasi melalui HTTP dengan format *query* GraphQL, sehingga contoh ini menunjukkan komunikasi antar proses pada sistem terdistribusi.
 
 ---
 
 ### D. Kesimpulan
-Praktikum minggu ini telah berhasil menyelesaikan seluruh rangkaian kegiatan. Pada Bagian I, lingkungan Linux di Windows melalui WSL serta pemantauan proses dengan `htop` berhasil dipraktikkan. Pada Bagian II, API berbasis GraphQL dengan Python dan `strawberry-graphql` berhasil dibangun, mulai dari isolasi lingkungan dengan `uv`, penulisan `schema.py`, hingga pengujian kueri pada GraphiQL Playground dengan keluaran JSON yang valid.
+Praktikum minggu ini menunjukkan bahwa pada satu *node*, proses dikelola penuh oleh sistem operasi dan dapat ditampilkan, dijalankan, serta dimatikan menggunakan `htop` dan `kill`. Pada sistem terdistribusi, komunikasi antar proses membutuhkan mekanisme khusus karena tidak ada *clock* dan *shared memory* bersama. GraphQL server berbasis Strawberry berhasil dibangun dengan `uv` dan diuji melalui GraphiQL (hasil JSON valid), kemudian diakses oleh *client* sebagai contoh komunikasi antar proses.
