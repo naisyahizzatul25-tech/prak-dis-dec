@@ -2,9 +2,9 @@
 ## Modul: Manajemen Proses Linux (WSL) & Implementasi GraphQL Server
 
 ### Identitas Mahasiswa
-- **Nama:** Naisyah Izzatul Jannah K.
-- **NIM:** 255410040
-- **Kelas:** Informatika IF 1 (Semester 3)
+- **Nama:** Naisyah Izzatul Jannah K.[cite: 1]
+- **NIM:** 255410040[cite: 1]
+- **Kelas:** Informatika IF 1 (Semester 3)[cite: 1]
 - **Universitas:** Universitas Teknologi Digital Indonesia (UTDI)[cite: 1]
 
 ---
@@ -31,17 +31,20 @@
 - **Tujuan:** Mengunduh, memasang, dan memverifikasi lingkungan Linux Ubuntu pada sistem host Windows menggunakan WSL[cite: 1].
 - **Langkah Kerja:** Menjalankan perintah pengunduhan dan instalasi WSL melalui antarmuka baris perintah Windows[cite: 1].
 - **Bukti Praktikum:**
-  <img width="800" alt="Instalasi WSL" src="images/01-wsl-download.png" />
+  <img width="800" alt="Instalasi WSL" src="images/01-wsl-download.png" />[cite: 1, 6]
 
 ##### 2. Pengenalan Utilitas Sistem & Kernel Linux (Nomor 2)
 - **Tujuan:** Memahami cara kernel Linux mengelola alokasi memori, instruksi CPU, dan penomoran identifikasi proses (*Process ID / PID*)[cite: 1].
-- **Langkah Kerja:** Membaca informasi sistem dan panduan antarmuka WSL
+- **Langkah Kerja:** Membaca informasi sistem dan panduan antarmuka WSL[cite: 1].
 - **Bukti Praktikum:**
-  <img width="800" alt="Welcome to WSL" src="images/03-welcome-wsl.png" />
+  <img width="800" alt="Welcome to WSL" src="images/03-welcome-wsl.png" />[cite: 1, 6]
 
 ##### 3. Pemantauan Proses Sistem Secara Real-Time dengan `htop` (Nomor 3)
 - **Tujuan:** Memantau penggunaan sumber daya hardware (CPU, RAM, Swap) serta daftar proses aktif di terminal Ubuntu[cite: 1].
 - **Perintah Terminal:**
+```bash
+htop
+```[cite: 1]
 - **Penjelasan:** Perintah `htop` menampilkan statistik penggunaan CPU per inti (*core*), persentase konsumsi memori, serta rincian proses aktif beserta PID dan penggunaan CPU/RAM masing-masing[cite: 1].
 - **Bukti Praktikum:**
   <img width="800" alt="Pemantauan Proses htop" src="images/02-htop.png" />[cite: 1, 6]
@@ -51,7 +54,8 @@
 - **Perintah Terminal:**
 ```bash
 pwd
-ls 
+ls -la
+```[cite: 1]
 - **Penjelasan:** Memastikan posisi direktori aktif berada di dalam lingkungan Linux WSL sebelum membuat folder proyek baru[cite: 1].
 - **Bukti Praktikum:**
   <img width="800" alt="Navigasi Terminal" src="images/03-welcome-wsl.png" />[cite: 1, 6]
