@@ -51,8 +51,8 @@
 - **Perintah Terminal:**
 ```bash
 pwd
-ls -la
-```[cite: 1]
+ls 
+
 - **Penjelasan:** Memastikan posisi direktori aktif berada di dalam lingkungan Linux WSL sebelum membuat folder proyek baru[cite: 1].
 - **Bukti Praktikum:**
   <img width="800" alt="Navigasi Terminal" src="images/03-welcome-wsl.png" />[cite: 1, 6]
