@@ -177,7 +177,38 @@ json
 
 ---
 
+---
+
+### E. Pengerjaan Tugas Tambahan (Manajemen Proses)
+
+#### 1. Menampilkan Berbagai Proses pada Komputer
+- **Penjelasan:** Menampilkan daftar seluruh proses aktif yang dikelola oleh sistem operasi Windows menggunakan antarmuka *Task Manager*.
+- **Bukti Praktikum:**
+  <img width="451" height="267" alt="image" src="https://github.com/user-attachments/assets/1ac22223-a987-4845-bbbb-291a16e9686b" />
+
+#### 2. Menjalankan Aplikasi dan Memantau Prosesnya
+- **Tujuan:** Membuktikan bahwa setiap aplikasi yang dijalankan akan dicatat dan dikelola sebagai proses baru oleh sistem operasi.
+- **Langkah Kerja:** Menjalankan aplikasi (seperti Microsoft Word dan Notepad) lalu memantau kemunculan prosesnya di Task Manager.
+- **Bukti Praktikum:**
+  <img width="939" height="553" alt="image" src="https://github.com/user-attachments/assets/b8884fcf-5a25-4c8f-ab3e-dc9c80c81f8a" />
+
+#### 3. Manajemen Penghentian Proses via Perintah Terminal
+- **Tujuan:** Mencari petunjuk serta mempraktikkan penghentian proses aplikasi secara langsung melalui baris perintah (*command line*).
+- **Perintah Terminal:**
+  powershell
+# Memeriksa ID Proses (PID) aplikasi Notepad
+Get-Process notepad
+
+# Mematikan proses aplikasi secara paksa berdasarkan PID
+Stop-Process -Id 5476 -Force
+Penjelasan: Perintah Stop-Process mengirimkan instruksi ke kernel sistem operasi untuk menghentikan alokasi memori dan mengakhiri eksekusi proses dengan PID tertentu secara langsung.
+- **Bukti Praktikum:**
+<img width="863" height="495" alt="image" src="https://github.com/user-attachments/assets/f030b0a7-5237-431a-aace-a2d405eae3b1" />
+
+
+---
 ### D. Kesimpulan
 Seluruh rangkaian praktikum Sistem Terdistribusi dan Terdesentralisasi minggu ini telah berhasil diselesaikan dengan baik:
 1. **Bagian I:** Pemahaman lingkungan sistem Linux di Windows melalui WSL serta pengelolaan dan pemantauan proses sistem berbasis baris perintah (`htop`) berhasil dipraktikkan secara lengkap dari nomor 1 hingga 4.
 2. **Bagian II:** Pembangunan API modern berbasis GraphQL menggunakan Python dan kerangka kerja `strawberry-graphql` berhasil diimplementasikan secara menyeluruh dari nomor 1 sampai 7, mulai dari pengisolasian lingkungan `uv`, penulisan kode `schema.py`, hingga pengujian eksekusi kueri pada GraphiQL Playground dengan keluaran JSON yang valid.
+3. **Tugas Manajemen Proses:** Pengelolaan proses pada satu node berada sepenuhnya di bawah kendali sistem operasi. Sistem operasi bertanggung jawab mengatur alokasi sumber daya hardware (CPU dan RAM), melakukan penjadwalan eksekusi, serta menghentikan proses secara terstruktur baik melalui antarmuka grafis (Task Manager) maupun baris perintah (terminal).
