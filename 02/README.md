@@ -31,13 +31,13 @@
 - **Tujuan:** Mengunduh, memasang, dan memverifikasi lingkungan Linux Ubuntu pada sistem host Windows menggunakan WSL[cite: 1].
 - **Langkah Kerja:** Menjalankan perintah pengunduhan dan instalasi WSL melalui antarmuka baris perintah Windows[cite: 1].
 - **Bukti Praktikum:**
-  <img width="800" alt="Instalasi WSL" src="images/01-wsl-download.png" />[cite: 1, 6]
+  <img width="800" alt="Instalasi WSL" src="images/01-wsl-download.png" />
 
 ##### 2. Pengenalan Utilitas Sistem & Kernel Linux (Nomor 2)
 - **Tujuan:** Memahami cara kernel Linux mengelola alokasi memori, instruksi CPU, dan penomoran identifikasi proses (*Process ID / PID*)[cite: 1].
-- **Langkah Kerja:** Membaca informasi sistem dan panduan antarmuka WSL[cite: 1].
+- **Langkah Kerja:** Membaca informasi sistem dan panduan antarmuka WSL
 - **Bukti Praktikum:**
-  <img width="800" alt="Welcome to WSL" src="images/03-welcome-wsl.png" />[cite: 1, 6]
+  <img width="800" alt="Welcome to WSL" src="images/03-welcome-wsl.png" />
 
 ##### 3. Pemantauan Proses Sistem Secara Real-Time dengan `htop` (Nomor 3)
 - **Tujuan:** Memantau penggunaan sumber daya hardware (CPU, RAM, Swap) serta daftar proses aktif di terminal Ubuntu[cite: 1].
