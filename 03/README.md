@@ -1,4 +1,4 @@
-#### Laporan Praktikum Sistem Terdistribusi dan Terdesentralisasi
+## Laporan Praktikum Sistem Terdistribusi dan Terdesentralisasi
 ## Modul 2: Manajemen Proses Linux (WSL) & Implementasi GraphQL Server
 
 ### Identitas Mahasiswa
