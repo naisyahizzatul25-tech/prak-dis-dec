@@ -47,7 +47,7 @@ Konsensus adalah pilar utama dalam sistem terdistribusi agar sekumpulan node dap
 ---
 
 ## Praktik
-## 3.1 Sinkronisasi Waktu
+### 3.1 Sinkronisasi Waktu
 
 ### Pengantar Protokol Waktu:
 Terdapat dua protokol utama yang biasanya digunakan untuk sinkronisasi waktu dalam sistem terdistribusi, yaitu NTP (Network Time Protocol) dan PTP (Precision Time Protocol).
@@ -65,7 +65,7 @@ Terdapat dua protokol utama yang biasanya digunakan untuk sinkronisasi waktu dal
 
 ---
 
-## 3.2 Vector Clock
+### 3.2 Vector Clock
 
 ### Konsep Dasar:
 Vector clock digunakan untuk pengurutan event (kejadian) dalam suatu sistem terdistribusi tanpa harus bergantung sepenuhnya pada jam fisik.
@@ -83,7 +83,7 @@ Vector clock digunakan untuk pengurutan event (kejadian) dalam suatu sistem terd
 
 ---
 
-## 3.3 Problem Tanpa Sinkronisasi
+### 3.3 Problem Tanpa Sinkronisasi
 
 ### Identifikasi Masalah:
 Pada sistem terdistribusi, ketiadaan sinkronisasi dapat memicu dua masalah utama, yaitu **data race / race conditions** dan **deadlock**. Pola pikir sekuensial tidak dapat diterapkan pada model asinkron atau multithreaded karena penyelesaian task bersifat tidak bisa diprediksi (non-deterministik).
@@ -129,7 +129,7 @@ Hasil terminal menunjukkan urutan starting serentak, namun urutan selesainya dap
 
 ---
 
-## 3.4 Algoritma Raft
+### 3.4 Algoritma Raft
 
 ### Pengantar Konsensus:
 Algoritma Raft digunakan dalam sistem terdistribusi untuk mencapai konsensus, seperti pemilihan koordinator (*leader election*).
