@@ -1,13 +1,10 @@
 # Laporan Praktikum Sistem Terdistribusi dan Terdesentralisasi
-## Modul 2: Manajemen Proses Linux (WSL) & Implementasi GraphQL Server
-
+## Modul 3: Sinkronisasi pada Sistem Terdistribusi
 ### Identitas Mahasiswa
 - **Nama:** Naisyah Izzatul Jannah K.
 - **NIM:** 255410040
 - **Kelas:** Informatika IF 1 (Semester 3)
 - **Universitas:** Universitas Teknologi Digital Indonesia (UTDI)
-
-Berikut adalah draf bagian **Tujuan** dan **Dasar Teori** yang disusun menggunakan format Markdown yang rapi dan terstruktur (lengkap dengan heading dan daftar poin), sehingga aman untuk disalin langsung ke file `README.md` GitHub Anda tanpa berantakan:
 
 ---
 
@@ -45,6 +42,140 @@ Konsensus adalah pilar utama dalam sistem terdistribusi agar sekumpulan node dap
 2. **Candidate:** Status sementara node ketika masa tunggu pemilihan (*election timeout*) habis, di mana node akan meminta suara (*vote*) dari node lain.
 3. **Leader:** Node penguasa terpilih yang bertanggung jawab penuh mengelola penambahan log (*append entries*) dan mengirimkan sinyal detak jantung (*heartbeat*) secara berkala kepada para *Follower*.
 ---
+
+## Praktik
+
+### 3.1 Sinkronisasi Waktu
+
+**Pengantar Protokol Waktu:**  
+Terdapat dua protokol utama yang biasanya digunakan untuk sinkronisasi waktu dalam sistem terdistribusi, yaitu NTP (*Network Time Protocol*) dan PTP (*Precision Time Protocol*).
+
+**Langkah Kerja (Linux / BSD / Mac):**  
+1. Menginstal Chrony (https://chrony-project.org/).  
+2. Menggunakan perintah Chrony pada terminal untuk melakukan sinkronisasi waktu ke suatu server NTP.
+
+**Pembahasan & Penjelasan Berdasarkan Gambar Terminal:**  
+* Perintah `chronyc tracking` dijalankan untuk memantau status sinkronisasi waktu sistem dengan rujukan jam `PHC0` pada tingkat Stratum 1.  
+* Nilai *system time* menunjukkan deviasi/offset yang sangat kecil terhadap waktu NTP.  
+* Perintah `chronyc sources -v` digunakan untuk menampilkan daftar server/sumber NTP yang terhubung dengan status terbaik serta tingkat keterjangkauan (*reach*) yang stabil.
+
+<img width="940" height="563" alt="image" src="https://github.com/user-attachments/assets/5bf7cbf4-b2aa-4961-8ccf-fe11901ad56b" />
+
+---
+
+### 3.2 Vector Clock
+
+**Konsep Dasar:**  
+*Vector clock* digunakan untuk pengurutan *event* (kejadian) dalam suatu sistem terdistribusi tanpa harus bergantung sepenuhnya pada jam fisik.
+
+**Langkah Kerja:**  
+1. Membuat berkas program Vector Clock sesuai struktur *class* dan logika pada modul.  
+2. Menjalankan simulasi program untuk mengamati perubahan nilai vektor pada beberapa proses.
+
+**Pembahasan & Penjelasan Berdasarkan Keluaran Terminal:**  
+* Inisialisasi awal sistem dengan 3 proses ($P_0, P_1, P_2$) menghasilkan nilai vektor `[0, 0, 0]` untuk masing-masing proses.  
+* Ketika suatu proses melakukan *increment* lokal, pengiriman pesan (`send_message`), atau penerimaan pesan (`receive_message`), nilai jam vektor diperbarui menggunakan operasi maksimum antar-komponen vektor dan penambahan nilai lokal.  
+* Pengujian kausalitas menunjukkan hasil bahwa `vc0 happens before vc1` bernilai `True`, sedangkan hubungan konkurensi (`vc0 is concurrent with vc2`) dievaluasi bernilai `False` karena memiliki hubungan kausal langsung.
+
+<img width="940" height="549" alt="image" src="https://github.com/user-attachments/assets/5f61081a-e245-4820-8e64-9d3a2caea660" />
+<img width="940" height="546" alt="image" src="https://github.com/user-attachments/assets/baf308de-e04b-4d52-b190-c7ae9294bbfc" />
+*Hasil
+<img width="940" height="688" alt="image" src="https://github.com/user-attachments/assets/c311218b-ecec-4ac0-b872-c18355472f46" />
+
+
+---
+
+### 3.3 Problem Tanpa Sinkronisasi
+
+**Identifikasi Masalah:**  
+Pada sistem terdistribusi, ketiadaan sinkronisasi dapat memicu dua masalah utama, yaitu *data race* / *race conditions* dan *deadlock*. Pola pikir sekuensial tidak dapat diterapkan pada model asinkron atau *multithreaded* karena penyelesaian task bersifat tidak bisa diprediksi (*non-deterministik*).
+
+**Langkah Kerja Program Multithreaded:**  
+1. Menjalankan program contoh multithread yang melibatkan beberapa thread tugas (`t1` sampai `t5`) dengan operasi penundaan waktu (*delay*).  
+2. Mengamati keluaran terminal hingga mendapati variasi urutan penyelesaian task.
+
+**Pembahasan & Penjelasan Gambar:**  
+* Hasil terminal menunjukkan urutan *starting* serentak, namun urutan selesainya dapat bervariasi bergantung pada penjadwalan CPU (*thread scheduler*) sistem operasi.
+
+<img width="940" height="550" alt="image" src="https://github.com/user-attachments/assets/c2c19001-83bb-44e2-844c-5fa08bee2ba5" />
+*Hasil
+<img width="940" height="474" alt="image" src="https://github.com/user-attachments/assets/bf219881-b526-479a-8405-63e54e81a7c2" />
+
+
+---
+
+#### 3.3.1 Data Race / Race Conditions
+
+**Langkah Kerja:**  
+1. Menjalankan program simulasi penarikan saldo bersamaan tanpa pengamanan (`race-conditions-01.py`).  
+2. Mengamati hasil keluaran saldo akhir yang menjadi negatif.  
+3. Menerapkan solusi pengamanan menggunakan `threading.Lock` (`race-conditions-02.py`).
+
+**Pembahasan & Penjelasan Berdasarkan Visualisasi dan Terminal:**  
+* Tanpa *lock*, dua *thread* membaca variabel global saldo secara bersamaan sebelum diperbarui, sehingga kedua thread menganggap saldo mencukupi dan melakukan pengurangan ganda yang berakibat saldo bernilai negatif (`-60`).  
+* Visualisasi alur menunjukkan terjadinya *overlapping* pembacaan data sebelum penyimpanan nilai baru.  
+* Dengan menambahkan objek pengunci (*Lock*), blok kode transaksi diatur secara eksklusif (*mutual exclusion*), memaksa *thread* kedua menunggu *thread* pertama selesai sehingga transaksi kedua ditolak karena saldo sudah tidak mencukupi.
+
+<img width="940" height="551" alt="image" src="https://github.com/user-attachments/assets/a6aae7b9-345d-4ee2-9f87-efe14d0d5719" />
+*Hasil
+<img width="940" height="257" alt="image" src="https://github.com/user-attachments/assets/bc6f02cb-9100-4b19-9f28-4beff8d02d90" />
+
+
+
+---
+
+#### 3.3.2 Deadlock
+
+**Langkah Kerja:**  
+1. Menjalankan program kondisi *deadlock* (`deadlock-01.py`) yang melibatkan dua kunci (`lock_a` dan `lock_b`).  
+2. Mengamati berhentinya program akibat kondisi saling tunggu (*hang*).  
+3. Menjalankan program pencegahan *deadlock* menggunakan *timeout* (`deadlock-02.py`).
+
+**Pembahasan & Penjelasan Berdasarkan Visualisasi dan Terminal:**  
+* Kondisi *deadlock* terjadi karena adanya *circular wait* (tunggu melingkar): Thread 1 memegang Lock A dan menunggu Lock B, sedangkan Thread 2 memegang Lock B dan menunggu Lock A.  
+* Pencegahan dilakukan dengan memberikan parameter batas waktu (*timeout*) pada fungsi penguncian. Jika dalam batas waktu tertentu kunci tidak didapat, *thread* akan membatalkan proses dan melepaskan kunci yang dipegangnya melalui blok pembersihan (*finally*), sehingga program terhindar dari kemacetan total.
+
+<img width="940" height="550" alt="image" src="https://github.com/user-attachments/assets/116be0a0-3b96-450c-b10a-6dd36a67301e" />
+*Hasil
+<img width="940" height="209" alt="image" src="https://github.com/user-attachments/assets/0ed1b697-18bd-45a8-8742-af3268fd676a" />
+
+
+
+---
+
+### 3.4 Algoritma Raft
+
+**Pengantar Konsensus:**  
+Algoritma Raft digunakan dalam sistem terdistribusi untuk mencapai konsensus, seperti pemilihan koordinator (*leader election*).
+
+**Langkah Kerja:**  
+1. Menjalankan program simulasi konsensus Raft berbasis Python (`raft.py`).  
+2. Mengamati perubahan status node dari setiap langkah (*step*).
+
+**Pembahasan & Penjelasan Berdasarkan Terminal:**  
+* Pada tahap awal, seluruh node berstatus sebagai pengikut (*follower*).  
+* Jika waktu tunggu pemilihan (*election timeout*) terlampaui tanpa adanya sinyal *heartbeat* dari pemimpin, node akan mengubah status menjadi kandidat (*candidate*), menaikkan nomor *term*, dan meminta dukungan suara.  
+* Ketika memperoleh suara mayoritas, node tersebut resmi terpilih menjadi pemimpin (*leader*) dan mulai mengirimkan sinyal *heartbeat* serta mengelola penambahan log (*append entries*).
+
+<img width="940" height="548" alt="image" src="https://github.com/user-attachments/assets/7da55da0-2d08-49b7-bf5c-4cad99fd27e4" />
+*Hasil
+<img width="424" height="960" alt="image" src="https://github.com/user-attachments/assets/cb38feaf-d567-4840-9ea7-df2fc5bdbdc5" />
+<img width="435" height="966" alt="image" src="https://github.com/user-attachments/assets/cbdd91a9-05b6-49fd-a3b3-08e1149cd8b3" />
+
+
+---
+
+### KESIMPULAN
+
+1. **Sinkronisasi Waktu:** Penggunaan NTP (*Chrony*) memastikan keselarasan waktu fisik antar-sistem dengan tingkat presisi yang tinggi melalui penyesuaian frekuensi (*slew*).  
+2. **Vector Clock:** Memungkinkan pelacakan hubungan kausalitas (*happens-before*) dan urutan kejadian logis dalam lingkungan terdistribusi secara akurat tanpa bergantung pada jam fisik.  
+3. **Manajemen Konkurensi:** Ketiadaan sinkronisasi dapat menimbulkan masalah fatal seperti *Data Race* dan *Deadlock*, yang dapat diatasi secara efektif menggunakan mekanisme *Locking* (*Mutual Exclusion*) dan *Timeout*.  
+4. **Algoritma Raft:** Menyediakan pendekatan konsensus yang terstruktur dan handal untuk mengelola pemilihan pemimpin (*leader*) serta replikasi log pada sistem terdistribusi.
+
+
+
+
+
 
 ## Praktik
 ### 3.1 Sinkronisasi Waktu
