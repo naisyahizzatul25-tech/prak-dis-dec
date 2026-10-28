@@ -1,4 +1,3 @@
-
 Laporan Praktikum Sistem Terdistribusi dan Terdesentralisasi
 
 Modul 4: Replikasi pada Sistem Terdistribusi (PostgreSQL Replication)
@@ -17,45 +16,39 @@ Tujuan Praktikum
 
 Memahami konsep dasar dan arsitektur Replikasi Database (Streaming Replication dan Logical Replication) pada PostgreSQL.
 
-Mampu mengonfigurasi Replikasi Fisik (Streaming Replication) menggunakan Docker Compose dan menguji sifat Read-Only pada node replica.
+Mampu mengonfigurasi Replikasi Fisik (Streaming Replication) menggunakan Docker Compose serta menguji sifat Read-Only pada node replica.
 
-Mampu mengonfigurasi Replikasi Logis (Logical Replication) dengan skema Publisher-Subscriber dan menguji sifat Read-Write pada node subscriber.
+Mampu mengonfigurasi Replikasi Logis (Logical Replication) dengan mekanisme Publication dan Subscription, serta menguji fitur Read-Write dan penanganan konflik sequence pada node subscriber.
 
-Mampu menangani konflik data serta melakukan sinkronisasi Sequence ID pada node subscriber.
+Menganalisis perbedaan karakteristik, kelebihan, dan penggunaan Streaming Replication dibanding Logical Replication dalam arsitektur sistem terdistribusi.
+
+Pembahasan Praktikum
 
 Part 4.1: Physical / Streaming Replication
 
-4.1.1 Verifikasi Lingkungan Docker
+4.1.1 Pemeriksaan Versi Docker
 
-Pemeriksaan awal dilakukan untuk memastikan kesiapan perangkat lunak Docker Engine dan Docker Compose pada lingkungan WSL (Windows Subsystem for Linux).
-
-Command:
+Langkah awal adalah memastikan bahwa Docker Engine dan plugin Docker Compose telah terinstal serta berjalan dengan baik di lingkungan WSL.
 
 docker --version && docker compose version
 
 
-Screenshot Output:
 
 Pembahasan:
-Sistem mengembalikan informasi Docker version 29.9.2 dan Docker Compose version v5.6.1. Hal ini menandakan engine containerization dan orkestrator compose sudah terpasang dengan benar dan siap mengelola service multi-container.
+Perintah ini mengeksekusi dua pengecekan versi sekaligus. Output menunjukkan Docker versi 29.9.2 dan Docker Compose versi v5.6.1. Hal ini mengonfirmasi bahwa seluruh kebutuhan utilitas containerization telah siap untuk mengorkestrasi node primary dan replica PostgreSQL.
 
-4.1.2 Pembuatan File Konfigurasi Streaming Replication
+4.1.2 Konfigurasi File Streaming Replication
 
-Langkah 1: Persiapan Direktori Kerja
-
-Command:
+Langkah 1: Membuat Direktori Kerja
 
 mkdir -p streaming-replication && cd streaming-replication
 
 
-Screenshot Output:
 
 Pembahasan:
-Perintah ini membuat direktori terisolasi bernama streaming-replication dan berpindah ke dalamnya. Isolasi direktori mencegah terjadinya bentrok file konfigurasi dengan modul praktikum lainnya.
+Perintah ini membuat folder terisolasi bernama streaming-replication dan berpindah ke dalamnya agar seluruh file konfigurasi modul 4.1 tersimpan rapi.
 
-Langkah 2: Inisialisasi Script Replikasi (00_init.sql)
-
-Command:
+Langkah 2: Membuat Script Inisialisasi User Replikasi (00_init.sql)
 
 cat << 'EOF' > 00_init.sql
 CREATE USER replicator WITH REPLICATION ENCRYPTED PASSWORD 'replicator_password';
@@ -63,18 +56,11 @@ SELECT pg_create_physical_replication_slot('replication_slot');
 EOF
 
 
-Screenshot Output:
 
 Pembahasan:
-File SQL ini digunakan saat bootstrapping node primary:
+Script SQL ini dipasang pada node Primary saat booting. Script membuat role replicator dengan kewenangan REPLICATION dan password 'replicator_password', serta mendaftarkan slot replikasi fisik bernama 'replication_slot'. Slot ini menjamin bahwa log WAL (Write-Ahead Logging) di primary tidak akan dihapus sebelum berhasil dikirim dan disinkronkan ke replica.
 
-CREATE USER replicator WITH REPLICATION: Membuat role khusus dengan atribut REPLICATION agar dapat membaca stream WAL (Write-Ahead Logging).
-
-pg_create_physical_replication_slot: Membuat physical replication slot bernama 'replication_slot'. Slot ini memastikan node primary menahan log WAL sampai node replica mengonfirmasi penerimaan data, mencegah data loss jika jaringan tidak stabil.
-
-Langkah 3: Konfigurasi Akses Host (01_hba.sh)
-
-Command:
+Langkah 3: Membuat Script Konfigurasi Hak Akses HBA (01_hba.sh)
 
 cat << 'EOF' > 01_hba.sh
 #!/bin/bash
@@ -83,14 +69,11 @@ EOF
 chmod +x 01_hba.sh
 
 
-Screenshot Output:
 
 Pembahasan:
-Script shell ini menambahkan aturan otentikasi ke file pg_hba.conf pada node primary. Rule host replication replicator all scram-sha-256 mengizinkan user replicator melakukan koneksi replikasi dari IP mana pun (all) dengan metode otentikasi terenkripsi scram-sha-256. Hak akses eksekusi ditambahkan menggunakan chmod +x.
+Script shell ini secara otomatis menyisipkan aturan koneksi pada file pg_hba.conf di primary. Aturan ini mengizinkan pengguna replicator terhubung dari host manapun untuk proses replikasi dengan metode autentikasi scram-sha-256. Perintah chmod +x memberikan izin eksekusi pada script.
 
-Langkah 4: Konfigurasi Docker Compose (docker-compose.yaml)
-
-Command:
+Langkah 4: Menyusun Konfigurasi Container (docker-compose.yaml)
 
 cat << 'EOF' > docker-compose.yaml
 x-postgres-common: &postgres-common
@@ -154,17 +137,11 @@ services:
 EOF
 
 
-Screenshot Output:
 
 Pembahasan:
+Dokumen ini mengonfigurasi dua service: postgres_primary (port 5432) dan postgres_replica (port 5433). Node primary mengaktifkan parameter wal_level=replica dan hot_standby=on. Node replica tidak menginisialisasi database kosong, melainkan mengeksekusi pg_basebackup untuk menyalin seluruh direktori data fisik dari primary secara otomatis sebelum menjalankan layanan PostgreSQL.
 
-postgres_primary: Mengaktifkan parameter utama engine PostgreSQL untuk streaming replication, yaitu wal_level=replica, hot_standby=on, serta mengonfigurasi batas pengiriman log WAL via max_wal_senders.
-
-postgres_replica: Sebelum service PostgreSQL berjalan, container mengeksekusi utility pg_basebackup secara looping untuk mengunduh salinan fisik biner data (PGDATA) secara utuh dari postgres_primary menggunakan koneksi user replicator. Parameter -R otomatis mengonfigurasi standby.signal pada replica.
-
-Langkah 5: Pembuatan Utility Alias (env.sh)
-
-Command:
+Langkah 5: Membuat File Alias Environment (env.sh)
 
 cat << 'EOF' > env.sh
 alias dcu="docker compose up -d"
@@ -175,141 +152,96 @@ alias dep="docker exec -it streaming-replication-postgres_primary-1 bash"
 alias dlr="docker logs streaming-replication-postgres_replica-1"
 alias dlp="docker logs streaming-replication-postgres_primary-1"
 EOF
-source env.sh
 
 
-Screenshot Output:
 
 Pembahasan:
-Script ini mendefinisikan shorthand command (alias) untuk mempercepat manajemen container melalui terminal tanpa perlu mengetikkan perintah docker exec atau docker compose secara berulang.
+Membuat shortcut terminal untuk mempermudah manajemen container Streaming Replication, seperti masuk ke shell primary (dep), replica (der), dan memantau status (dps).
 
-4.1.3 Pelaksanaan dan Verifikasi Status Container
+4.1.3 Menjalankan & Memeriksa Status Container
 
-Langkah 1: Pengaktifan Service
+Langkah 1: Menyalakan Container
 
-Command:
-
+source env.sh
 dcu
 
 
-Screenshot Output:
 
 Pembahasan:
-Docker Compose membentuk jaringan virtual streaming-replication_default dan merilis/menjalankan container postgres_primary serta postgres_replica di latar belakang (detached mode).
+Mengaktifkan alias lingkungan dan mengeksekusi docker compose up -d. Output menunjukkan jaringan virtual dan kedua container (postgres_primary dan postgres_replica) berhasil dibuat dan dijalankan di latar belakang.
 
-Langkah 2: Cek Status Healthcheck
-
-Command:
+Langkah 2: Verifikasi Healthcheck Container
 
 dps
 
 
-Screenshot Output:
 
 Pembahasan:
-Perintah docker ps menampilkan status kedua container:
+Perintah dps menampilkan status kedua container dengan kondisi Up (healthy). Ini membuktikan bahwa proses kloning fisik data via pg_basebackup di replica telah selesai dan kedua database beroperasi dengan normal.
 
-Container streaming-replication-postgres_primary-1 berstatus Up (healthy) pada port 5432.
+4.1.4 Verifikasi & Pengujian Streaming Replication
 
-Container streaming-replication-postgres_replica-1 berstatus Up (healthy) pada port 5433.
-Ini menandakan pg_basebackup pada replica berhasil diselesaikan dan instance replica telah aktif penuh.
-
-4.1.4 Pengujian Replikasi Data & Sifat Read-Only
-
-Langkah 1 & 2: Pemeriksaan Slot Replikasi di Primary
-
-Command:
+Langkah 1 & 2: Memeriksa Status Replikasi pada Primary
 
 dep
 psql -U zuser -d zdb -c "SELECT client_addr, state, sync_state FROM pg_stat_replication;"
 
 
-Screenshot Output:
 
 Pembahasan:
-Query pada view sistem pg_stat_replication di container primary menghasilkan record:
+Setelah masuk ke container primary (dep), query ke tampilan sistem pg_stat_replication menunjukkan adanya 1 koneksi aktif dari IP replica (172.18.0.3) dengan state = streaming dan sync_state = async. Ini menegaskan bahwa saluran Streaming Replication terhubung sempurna.
 
-client_addr: 172.18.0.3 (IP internal container replica)
-
-state: streaming
-
-sync_state: async
-Hasil ini mengonfirmasi bahwa koneksi stream WAL antara primary dan replica telah terhubung dan aktif bekerja dalam mode asinkron.
-
-Langkah 3: Keluar Container Primary
-
-Command:
+Langkah 3 & 4: Penulisan Data Baru di Node Primary
 
 exit
-
-
-Screenshot Output:
-
-Langkah 4: Pembuatan Data Sampel pada Primary
-
-Command:
-
 dep
 psql -U zuser -d zdb -c "CREATE TABLE tes_replikasi (id SERIAL PRIMARY KEY, nama VARCHAR(50));"
 psql -U zuser -d zdb -c "INSERT INTO tes_replikasi (nama) VALUES ('Data Pertama'), ('Data Kedua');"
 exit
 
 
-Screenshot Output:
 
 Pembahasan:
-Proses DDL (CREATE TABLE) dan DML (INSERT) dieksekusi di database primary. Perubahan fisik berkas data dicatat dalam log WAL dan disiarkan ke aliran streaming.
+Pada node primary, dibuat tabel baru tes_replikasi dan diisi dua baris data ('Data Pertama', 'Data Kedua'). Operasi DDL dan DML ini ditulis ke log WAL primary untuk disiarkan ke replica.
 
-Langkah 5: Verifikasi Sinkronisasi Data di Replica
-
-Command:
+Langkah 5: Memeriksa Sinkronisasi Data di Node Replica
 
 der
 psql -U zuser -d zdb -c "SELECT * FROM tes_replikasi;"
 exit
 
 
-Screenshot Output:
 
 Pembahasan:
-Query SELECT pada node replica menampilkan baris data Data Pertama (ID 1) dan Data Kedua (ID 2). Ini membuktikan data dari primary berhasil direplikasi secara otomatis ke replica secara real-time.
+Masuk ke container replica (der) dan mengeksekusi query SELECT. Data 'Data Pertama' dan 'Data Kedua' tampil secara identik, membuktikan bahwa replikasi fisik data secara real-time telah berhasil.
 
-Langkah 6: Pengujian Transaksi Penulisan (Read-Only Test) di Replica
-
-Command:
+Langkah 6: Uji Sifat Read-Only pada Replica
 
 der
 psql -U zuser -d zdb -c "INSERT INTO tes_replikasi (nama) VALUES ('Data Tiga');"
 exit
 
 
-Screenshot Output:
 
 Pembahasan:
-Sistem menolak operasi DML penulisan dengan pesan kesalahan:
-ERROR: cannot execute INSERT in a read-only transaction
-Hal ini membuktikan bahwa node replica dalam Streaming Replication bersifat Standby Read-Only, sehingga aman dari manipulasi data lokal secara langsung.
+Saat mencoba memasukkan data baru langsung pada node replica, PostgreSQL menolak transaksi dengan pesan kesalahan ERROR: cannot execute INSERT in a read-only transaction. Hal ini mengonfirmasi bahwa node replica pada Streaming Replication bersifat Read-Only (Hot Standby).
 
-Langkah 7: Cleanup Container Streaming Replication
-
-Command:
+Langkah 7: Membersihkan Container Streaming Replication
 
 dcd
 
 
-Screenshot Output:
 
 Pembahasan:
-Perintah docker compose down menghentikan dan menghapus seluruh container serta jaringan yang berkaitan dengan Streaming Replication agar lingkungan bersih sebelum memulai praktikum berikutnya.
+Perintah dcd (docker compose down) mematikan dan menghapus seluruh container serta network fisik replikasi agar lingkungan kembali bersih sebelum melangkah ke praktikum berikutnya.
 
 Part 4.2: Logical Replication
 
-4.2.1 Konfigurasi & Inisialisasi Logical Replication
+4.2.1 Inisialisasi & Pengujian Logical Replication
 
-Persiapan File docker-compose.yaml
+Langkah 1: Membuat File docker-compose.yaml Logical Replication
 
-Command:
-
+mkdir -p ~/logical-replication && cd ~/logical-replication
 cat << 'EOF' > docker-compose.yaml
 x-postgres-common: &postgres-common
   image: postgres:18.3-alpine3.23
@@ -340,19 +272,11 @@ services:
 EOF
 
 
-Screenshot Output:
 
 Pembahasan:
+Menyusun konfigurasi dua instance database independen: postgres_pub (Publisher) dan postgres_sub (Subscriber). Node publisher dikonfigurasi khusus dengan wal_level=logical agar dapat memparsing perubahan data level baris (row-level change stream).
 
-Arsitektur Logical Replication tidak membutuhkan pembacaan file biner data (PGDATA) secara utuh.
-
-Container postgres_pub (Publisher) dikonfigurasi dengan parameter wal_level=logical agar log WAL menyertakan informasi pengkodean tingkat baris/tabel.
-
-Container postgres_sub (Subscriber) berstatus sebagai server PostgreSQL mandiri tanpa perlu inisialisasi pg_basebackup.
-
-Pembuatan Script Alias dan Peluncuran Service
-
-Command:
+Langkah 2: Membuat File Alias Environment (env.sh)
 
 cat << 'EOF' > env.sh
 alias dcu="docker compose up -d"
@@ -363,21 +287,24 @@ alias der="docker exec -it logical-replication-postgres_sub-1 bash"
 alias dlp="docker logs logical-replication-postgres_pub-1"
 alias dlr="docker logs logical-replication-postgres_sub-1"
 EOF
+
+
+
+Pembahasan:
+Menyiapkan alias perintah terminal untuk mengelola container postgres_pub (dep) dan postgres_sub (der).
+
+Langkah 3: Menjalankan Container & Mengecek Status
+
 source env.sh
 dcu
 dps
 
 
-Screenshot Output:
 
 Pembahasan:
-Container postgres_pub dan postgres_sub dinyalakan. Verifikasi via dps mengonfirmasi kedua container berada pada kondisi Up (healthy).
+Container postgres_pub dan postgres_sub dinyalakan. Pengecekan dps memastikan kedua container berstatus Up (healthy).
 
-4.2.2 Konfigurasi Publication dan Subscription
-
-Konfigurasi di Node Publisher (postgres_pub)
-
-Command:
+Langkah 4: Membuat Tabel & Publication pada Publisher
 
 dep
 psql -U zuser -d zdb -c "CREATE TABLE users (id SERIAL PRIMARY KEY, name VARCHAR(50));"
@@ -386,19 +313,11 @@ psql -U zuser -d zdb -c "INSERT INTO users (name) VALUES ('Budi'), ('Siti');"
 exit
 
 
-Screenshot Output:
 
 Pembahasan:
+Pada node publisher (dep), skema tabel users dibuat dan dipublikasikan menggunakan CREATE PUBLICATION my_pub FOR TABLE users;. Setelah itu dimasukkan dua baris data awal ('Budi', 'Siti').
 
-Membuat skema tabel users.
-
-Perintah CREATE PUBLICATION my_pub FOR TABLE users; mendaftarkan tabel users sebagai objek logical replication yang akan dipublikasikan ke subscriber yang terhubung.
-
-Mengisi data sampel (Budi dan Siti).
-
-Konfigurasi di Node Subscriber (postgres_sub)
-
-Command:
+Langkah 5: Membuat Tabel & Subscription pada Subscriber
 
 der
 psql -U zuser -d zdb -c "CREATE TABLE users (id SERIAL PRIMARY KEY, name VARCHAR(50));"
@@ -406,53 +325,33 @@ psql -U zuser -d zdb -c "CREATE SUBSCRIPTION my_sub CONNECTION 'host=postgres_pu
 exit
 
 
-Screenshot Output:
 
 Pembahasan:
+Pada node subscriber (der), tabel users dibuat mandiri. Selanjutnya mengeksekusi CREATE SUBSCRIPTION my_sub .... Output NOTICE: created replication slot "my_sub" on publisher menandakan slot replikasi logis pada publisher berhasil terhubung ke subscriber.
 
-Skema tabel users harus dibuat secara manual terlebih dahulu pada subscriber (karena logical replication hanya mengalirkan data baris, bukan skema/DDL).
-
-Perintah CREATE SUBSCRIPTION menghubungkan subscriber ke instance publisher via string koneksi TCP.
-
-Output terminal NOTICE: created replication slot "my_sub" on publisher menandakan bahwa slot replikasi logis pada publisher sukses dibentuk secara otomatis.
-
-4.2.3 Verifikasi Data & Pengujian Fitur Read-Write
-
-Verifikasi Data Awal Replikasi di Subscriber
-
-Command:
+Langkah 6: Verifikasi Replikasi Data pada Subscriber
 
 der
 psql -U zuser -d zdb -c "SELECT * FROM users;"
 exit
 
 
-Screenshot Output:
 
 Pembahasan:
-Output SELECT memperlihatkan data 1 | Budi dan 2 | Siti telah masuk ke subscriber. Ini mengonfirmasi bahwa sinkronisasi data antar tabel berhasil.
+Query SELECT pada subscriber menampilkan data 'Budi' dan 'Siti'. Ini membuktikan data awal dari publisher langsung tersinkronisasi secara otomatis saat subscription dibuat.
 
-Pengujian Penulisan Lokal & Penanganan Konflik Sequence ID
-
-Command:
+Langkah 7: Pengujian Fitur Read-Write & Conflict Sequence
 
 der
 psql -U zuser -d zdb -c "INSERT INTO users (name) VALUES ('Cici');"
 exit
 
 
-Screenshot Output:
 
-Pembahasan & Evaluasi Masalah:
-Saat memasukkan data lokal (Cici), muncul pesan kesalahan:
-ERROR: duplicate key value violates unique constraint "users_pkey"
-DETAIL: Key (id)=(1) already exists.
+Pembahasan:
+Saat mencoba memasukkan data 'Cici' secara lokal di subscriber, muncul pesan ERROR: duplicate key value violates unique constraint "users_pkey" (Key id=1 already exists). Hal ini terjadi karena Logical Replication mendplikasi data tanpa memperbarui nilai internal sequence auto-increment pada subscriber, sehingga sequence lokal masih menunjuk ke nilai 1.
 
-Penyebab: Data Budi (id 1) dan Siti (id 2) masuk ke subscriber melalui jalur pengaliran Logical Replication, bukan transaksi INSERT lokal. Hal ini menyebabkan objek sequence generator (users_id_seq) di subscriber masih tertinggal pada nilai awal 1.
-
-Solusi Sinkronisasi Sequence ID
-
-Command:
+Langkah 8: Sinkronisasi Sequence & Verifikasi Penulisan Lokal
 
 der
 psql -U zuser -d zdb -c "SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));"
@@ -461,38 +360,16 @@ psql -U zuser -d zdb -c "SELECT * FROM users;"
 exit
 
 
-Screenshot Output:
 
 Pembahasan:
-
-SELECT setval(...): Memperbarui posisi nilai terakhir sequence generator users_id_seq agar menyesuaikan dengan nilai MAX(id) yang ada pada tabel (yaitu 2).
-
-Perintah INSERT INTO users (name) VALUES ('Cici') berikutnya berjalan sukses tanpa hambatan dan mendapatkan ID otomatis 3.
-
-Hasil query akhir menampilkan:
-
-1 | Budi (Hasil Logical Replication dari Publisher)
-
-2 | Siti (Hasil Logical Replication dari Publisher)
-
-3 | Cici (Hasil penulisan Read-Write lokal di Subscriber)
+Fungsi setval() dieksekusi untuk menyesuaikan nilai sequence users_id_seq ke angka 2 (nilai id maksimum saat ini). Setelah disinkronkan, operasi INSERT lokal untuk 'Cici' berhasil dilakukan. Tampilan akhir menunjukkan data 1 | Budi (replicated), 2 | Siti (replicated), dan 3 | Cici (inserted locally). Ini membuktikan bahwa node Subscriber pada Logical Replication tetap berstatus Read-Write.
 
 Kesimpulan
 
-Streaming Replication (Physical Replication)
+Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa:
 
-Beroperasi pada tingkat biner/berkas data (PGDATA / WAL physical).
+Streaming Replication (Physical Replication) bekerja pada tingkat blok fisik / file storage (wal_level=replica) dengan bantuan utilitas pg_basebackup. Node replica bersifat Standby Read-Only, sehingga cocok digunakan untuk skenario High Availability (HA), Disaster Recovery, dan Read-Heavy Load Balancing.
 
-Node Replica merupakan salinan 1:1 dari Primary dan bersifat Read-Only (menolak transaksi DML/DDL langsung).
+Logical Replication bekerja pada tingkat logis / data tabel (wal_level=logical) berbasis mekanisme Publish-Subscribe. Node subscriber tetap berstatus Read-Write dan memungkinkan replikasi selektif per tabel antar-versi PostgreSQL yang berbeda.
 
-Sangat cocok diterapkan untuk skenario High Availability (HA), Disaster Recovery (DR), dan Read-Scaling utuh.
-
-Logical Replication
-
-Beroperasi pada tingkat objek/baris data berdasarkan konsep Publisher-Subscriber.
-
-Node Subscriber bersifat Read-Write, memungkinkan penambahan/perubahan data lokal secara independen di luar tabel yang disinkronkan.
-
-Perlu perhatian khusus pada penanganan Sequence ID (SERIAL) pada subscriber saat melakukan operasi penulisan lokal untuk menghindari konflik Unique Primary Key Constraint.
-
-Sangat cocok digunakan untuk konsolidasi data antar database, migrasi versi major PostgreSQL, atau replikasi selektif tabel tertentu.
+Penanganan penulisan lokal pada Logical Replication memerlukan perhatian ekstra terhadap primary key sequence (SERIAL), di mana penyelarasan nilai setval() secara manual atau otomatis diperlukan untuk mencegah timbulnya unique constraint violation.
