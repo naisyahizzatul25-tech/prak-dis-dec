@@ -49,7 +49,10 @@
 <img width="940" height="148" alt="image" src="https://github.com/user-attachments/assets/98bf4f7f-bfc6-49d0-b4b3-6a304a814c6d" />
 
 * **Pembahasan:**
-  Penyusunan skrip SQL inisialisasi pada node Primary bertugas membuat pengguna `replicator` dengan otorisasi `REPLICATION` serta mendaftarkan slot replikasi fisik bernama `replication_slot`. Slot ini berfungsi mencegah node Primary menghapus log WAL sebelum disinkronisasikan ke node Replica.
+ Perintah `mkdir -p streaming-replication && cd streaming-replication` dieksekusi pada lingkungan shell Bash.
+  * Bendera `-p` (*parents*) pada perintah `mkdir` memastikan bahwa sistem operasi akan membuat direktori bernama `streaming-replication` secara aman tanpa mengeluarkan pesan galat jika direktori tersebut sudah ada sebelumnya di dalam sistem berkas.
+  * Perintah `cd` (*change directory*) dilanjutkan untuk memindahkan direktori kerja aktif terminal ke dalam folder baru tersebut.
+  * **Analisis Kritis:** Pengisolasian ruang kerja ini merupakan praktik terbaik (*best practice*) dalam manajemen proyek terdistribusi. Langkah ini memastikan seluruh berkas manifes konfigurasional (`00_init.sql`, `01_hba.sh`, `docker-compose.yaml`, dan `env.sh`) terisolasi penuh, mencegah bentrokan nama berkas dengan modul praktikum lain, serta memudahkan proses *clean-up* atau migrasi repositori.
 
 #### Langkah 3: Konfigurasi Otentikasi (`01_hba.sh`)
 
