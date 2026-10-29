@@ -65,7 +65,11 @@
 <img width="1053" height="778" alt="image" src="https://github.com/user-attachments/assets/47e564c1-b0cd-4c4f-b413-629d3f6768f0" />
 
 * **Pembahasan:**
-  Pengaturan orkestrasi dua kontainer PostgreSQL disiapkan. Node `postgres_primary` berjalan pada port 5432 dengan mode `wal_level=replica`, sedangkan node `postgres_replica` pada port 5433 melakukan penyalinan data awal secara fisik (*physical base backup*) menggunakan perintah `pg_basebackup` dari Primary sebelum memulai layanannya.
+Berkas `01_hba.sh` disiapkan sebagai skrip Bash otomatisasi konfigurasi lapisan keamanan jaringan PostgreSQL (*Host-Based Authentication*).
+  * Baris perintah `echo "host replication replicator all scram-sha-256" >> "$PGDATA/pg_hba.conf"` mengeksekusi penambahan baris aturan baru ke dalam berkas `pg_hba.conf` yang berlokasi di dalam direktori data PostgreSQL (`$PGDATA`).
+  * Maksud dari aturan ini: Mengizinkan tipe koneksi `host` khusus untuk protokol `replication`, menggunakan nama pengguna `replicator`, dari sembarang alamat IP asal (`all`), dengan syarat wajib melewati tantangan enkripsi `scram-sha-256`.
+  * Perintah `chmod +x 01_hba.sh` mengeksekusi modifikasi mode hak akses berkas agar memiliki atribut *executable* (`+x`).
+  * **Analisis Kritis:** PostgreSQL menerapkan model keamanan *default* yang sangat ketat di mana koneksi luar untuk keperluan replikasi ditolak secara baku. Tanpa injeksi aturan ini ke dalam `pg_hba.conf`, kontainer replica tidak akan pernah diizinkan melakukan *handshake* jaringan ke primary, dan akan selalu menghasilkan pesan kesalahan *FATAL: no pg_hba.conf entry for replication connection*.
 
 #### Langkah 5: Membuat Alias Shell (`env.sh`)
 
