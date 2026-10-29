@@ -38,7 +38,11 @@
 <img width="940" height="99" alt="image" src="https://github.com/user-attachments/assets/931401b6-9048-476a-b84f-d0f22024741d" />
 
 * **Pembahasan:**
-  Proses pembuatan direktori kerja `streaming-replication` dilakukan agar seluruh skrip dan konfigurasi replikasi fisik tersimpan secara terisolasi dan rapi.
+  Perintah `mkdir -p streaming-replication && cd streaming-replication` dieksekusi pada lingkungan shell Bash.
+  * Bendera `-p` (*parents*) pada perintah `mkdir` memastikan bahwa sistem operasi akan membuat direktori bernama `streaming-replication` secara aman tanpa mengeluarkan pesan galat jika direktori tersebut sudah ada sebelumnya di dalam sistem berkas.
+  * Perintah `cd` (*change directory*) dilanjutkan untuk memindahkan direktori kerja aktif terminal ke dalam folder baru tersebut.
+  * **Analisis Kritis:** Pengisolasian ruang kerja ini merupakan praktik terbaik (*best practice*) dalam manajemen proyek terdistribusi. Langkah ini memastikan seluruh berkas manifes konfigurasional (`00_init.sql`, `01_hba.sh`, `docker-compose.yaml`, dan `env.sh`) terisolasi penuh, mencegah bentrokan nama berkas dengan modul praktikum lain, serta memudahkan proses *clean-up* atau migrasi repositori.
+
 
 #### Langkah 2: Script Inisialisasi Primary (`00_init.sql`)
 
