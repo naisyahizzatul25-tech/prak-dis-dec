@@ -49,11 +49,10 @@
 <img width="940" height="148" alt="image" src="https://github.com/user-attachments/assets/98bf4f7f-bfc6-49d0-b4b3-6a304a814c6d" />
 
 * **Pembahasan:**
- Perintah `mkdir -p streaming-replication && cd streaming-replication` dieksekusi pada lingkungan shell Bash.
-  * Bendera `-p` (*parents*) pada perintah `mkdir` memastikan bahwa sistem operasi akan membuat direktori bernama `streaming-replication` secara aman tanpa mengeluarkan pesan galat jika direktori tersebut sudah ada sebelumnya di dalam sistem berkas.
-  * Perintah `cd` (*change directory*) dilanjutkan untuk memindahkan direktori kerja aktif terminal ke dalam folder baru tersebut.
-  * **Analisis Kritis:** Pengisolasian ruang kerja ini merupakan praktik terbaik (*best practice*) dalam manajemen proyek terdistribusi. Langkah ini memastikan seluruh berkas manifes konfigurasional (`00_init.sql`, `01_hba.sh`, `docker-compose.yaml`, dan `env.sh`) terisolasi penuh, mencegah bentrokan nama berkas dengan modul praktikum lain, serta memudahkan proses *clean-up* atau migrasi repositori.
-
+  Menggunakan teknik *Here-Document* (`cat << 'EOF' > 00_init.sql`), sebuah berkas skrip SQL inisialisasi dibuat secara otomatis. Skrip ini akan dimasukkan ke dalam folder bootstrap PostgreSQL agar dieksekusi pada saat kontainer primary pertama kali dibuat.
+  1. `CREATE USER replicator WITH REPLICATION ENCRYPTED PASSWORD 'replicator_password';`: Instuktor SQL ini berfungsi mendaftarkan peranan (*role*) pengguna sistem bernama `replicator`. Pemberian klausula `WITH REPLICATION` memberi hak akses khusus pada tingkatan engine agar pengguna ini dapat membuka koneksi socket streaming WAL. Kata sandi dienkripsi menggunakan standar keamanan `scram-sha-256`.
+  2. `SELECT pg_create_physical_replication_slot('replication_slot');`: Fungsi internal PostgreSQL ini dipanggil untuk mengalokasikan satu slot replikasi fisik bernama `replication_slot`.
+  * **Analisis Kritis:** Kehadiran slot replikasi fisik merupakan elemen krusial pada arsitektur streaming. Tanpa slot ini, jika node replica mengalami gangguan koneksi jaringan sementara, node primary dapat secara tidak sengaja menghapus berkas WAL yang dianggap sudah tua dari disk (`pg_wal`). Akibatnya, saat replica kembali *online*, proses sinkronisasi akan gagal total (*WAL segment already removed*) dan membutuhkan proses re-backup dari awal.
 #### Langkah 3: Konfigurasi Otentikasi (`01_hba.sh`)
 
 <img width="940" height="187" alt="image" src="https://github.com/user-attachments/assets/13cc189e-d3fa-4cd6-842b-8ee3fa39270e" />
