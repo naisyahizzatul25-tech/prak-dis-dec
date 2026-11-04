@@ -1,5 +1,14 @@
+# Laporan Praktikum Sistem Terdistribusi dan Terdesentralisasi
 
-Laporan Praktikum Modul 5: Load Balancing dan Fault Tolerance
+## Modul 4: Replikasi pada Sistem Terdistribusi (PostgreSQL Replication)
+
+### Identitas Mahasiswa
+
+* **Nama:** Naisyah Izzatul Jannah K.
+* **NIM:** 255410040
+* **Kelas:** Informatika IF 1 (Semester 3)
+* **Universitas:** Universitas Teknologi Digital Indonesia (UTDI)
+
 
 Dokumentasi ini berisi penjelasan dan pembahasan detail dari alur pengujian Load Balancing dan Fault Tolerance menggunakan Nginx sebagai Reverse Proxy / Load Balancer dan BlackSheep (Python Framework) sebagai aplikasi backend di dalam lingkungan Docker.
 
