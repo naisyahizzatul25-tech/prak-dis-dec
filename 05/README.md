@@ -181,13 +181,13 @@ docker stop workspace-05-bs_app-1
 **4. Recovery Instance & Stopping Containers:**
 Menyalakan kembali instance `bs_app-1` dan menghentikan seluruh layanan setelah pengujian selesai:
 
-# Menyalakan kembali instance bs_app-1
+** Menyalakan kembali instance bs_app-1
 docker start workspace-05-bs_app-1
 
-# Memeriksa status kontainer
+** Memeriksa status kontainer
 docker ps --format '{{.Image}} {{.Names}} {{.Status}}'
 
-# Mematikan seluruh environment
+## Mematikan seluruh environment
 docker compose down
 
 ![Recovery dan Teardown Environment](path/to/gambar-4.5.png)
