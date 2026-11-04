@@ -12,7 +12,7 @@
 
 Dokumentasi ini berisi penjelasan dan pembahasan detail dari alur pengujian Load Balancing dan Fault Tolerance menggunakan Nginx sebagai Reverse Proxy / Load Balancer dan BlackSheep (Python Framework) sebagai aplikasi backend di dalam lingkungan Docker.
 
-4.1 Load Balancing Aplikasi
+##4.1 Load Balancing Aplikasi
 
 1. Persiapan Environment
 
