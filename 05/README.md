@@ -9,57 +9,61 @@
 * **Kelas:** Informatika IF 1 (Semester 3)
 * **Universitas:** Universitas Teknologi Digital Indonesia (UTDI)
 
+---
 
-Dokumentasi ini berisi penjelasan dan pembahasan detail dari alur pengujian Load Balancing dan Fault Tolerance menggunakan Nginx sebagai Reverse Proxy / Load Balancer dan BlackSheep (Python Framework) sebagai aplikasi backend di dalam lingkungan Docker.
+## 1. Tujuan Praktikum
 
-##4.1 Load Balancing Aplikasi
+1. Memahami konsep Fault Tolerance dan High Availability pada sistem terdistribusi.
+2. Memahami peran Load Balancer dan Reverse Proxy dalam mendistribusikan beban trafik aplikasi.
+3. Mampu melakukan scaling (menduplikasi) instance aplikasi web/API menggunakan Docker Compose.
+4. Mengonfigurasi Nginx untuk mendistribusikan request HTTP ke beberapa kontainer backend.
+5. Menguji keandalan sistem (*failure detection & recovery*) saat salah satu instance aplikasi mengalami gangguan/mati.
 
-1. Persiapan Environment
+---
 
-Pada tahap awal, dilakukan penyiapan lingkungan kerja di sistem operasi Linux (WSL 2).
+## 2. Dasar Teori
 
-Pembaruan Sistem dan Instalasi Dependensi:
+### 2.1 Fault Tolerance & High Availability
+- **Fault Tolerance** adalah kemampuan suatu sistem terdistribusi untuk tetap beroperasi secara normal meskipun terjadi kegagalan (kegagalan komponen hardware, jaringan, atau software) pada salah satu node/komponennya.
+- **High Availability (HA)** merujuk pada sistem yang dirancang untuk beroperasi tanpa henti (*zero downtime*) dalam jangka waktu lama dengan cara meminimalkan *Single Point of Failure* (SPOF).
+
+### 2.2 Load Balancing & Reverse Proxy
+- **Reverse Proxy**: Server perantara yang menerima request dari klien/internet dan meneruskannya ke satu atau beberapa server backend.
+- **Load Balancing**: Teknik pembagian beban kerja secara merata ke beberapa server backend agar tidak ada satu pun server yang mengalami *overload*. Algoritma standar yang umum digunakan adalah *Round-Robin*, di mana request diteruskan secara bergiliran ke setiap server.
+- **Nginx**: Salah satu web server dan reverse proxy berkinerja tinggi yang populer digunakan sebagai load balancer untuk lalu lintas HTTP/HTTPS.
+
+### 2.3 BlackSheep & ASGI Framework
+- **ASGI (Asynchronous Server Gateway Interface)**: Standar antarmuka antara web server asinkron dengan aplikasi Python.
+- **BlackSheep**: Framework web/API Python berbasis asyncio yang memiliki kinerja sangat cepat (*high-performance*) dan mendukung fitur modern seperti validasi Pydantic, injeksi dependensi, serta generasi otomatis dokumentasi OpenAPI (Swagger).
+
+---
+
+## 3. Langkah Praktikum & Load Balancing Aplikasi
+
+### 3.1 Persiapan Lingkungan Pengembangan
+Langkah awal dimulai dengan penyiapan dependensi dasar pada sistem operasi Linux (Ubuntu/WSL) seperti paket Python virtual environment (`python3-venv`) dan `pip`.
+
 
 sudo apt update
 sudo apt install python3.14-venv python3-pip -y
+Gambar 3.1: Proses instalasi dependensi dasar di terminal.
 
+Selanjutnya, dibuat direktori kerja workspace-05, pembuatan lingkungan virtual .venv, dan instalasi framework aplikasi web BlackSheep:
 
-Perintah ini mengunduh indeks paket terbaru serta menginstal python3-venv untuk isolasi virtual environment dan pip sebagai pengelola paket Python.
-
-Penjelasan Gambar 1:
-Menampilkan proses eksekusi sudo apt update dan instalasi dependensi python3.14-venv serta python3-pip. Terminal mengonfirmasi daftar pustaka dasar (seperti gcc, make, python3-dev) yang ikut terpasang untuk mendukung kompilasi modul Python.
-
-Inisialisasi Direktori dan Virtual Environment:
-
+Bash
 mkdir workspace-05
 cd workspace-05/
 python3 -m venv .venv
 source .venv/bin/activate
-
-
-Instalasi Framework BlackSheep:
-
 pip install blacksheep blacksheep-cli
+Gambar 3.2: Aktivasi virtual environment dan instalasi paket BlackSheep.
 
+3.2 Pembuatan Aplikasi Web (blacksheep_lb)
+Aplikasi web diinisialisasi menggunakan CLI bawaan BlackSheep:
 
-Menginstal framework web berkinerja tinggi blacksheep beserta antarmuka CLI-nya (blacksheep-cli).
-
-Penjelasan Gambar 2:
-Menampilkan proses pengunduhan dependensi paket blacksheep dan blacksheep-cli via pip di dalam virtual environment .venv.
-
-Penjelasan Gambar 3:
-Menampilkan pesan konfirmasi bahwa instalasi pustaka pendukung (seperti Jinja2, uvicorn, pydantic, httptools, dan blacksheep-cli) telah selesai dan berhasil terpasang (Successfully installed).
-
-2. Pembuatan Aplikasi Web
-
-Membuat project aplikasi backend baru menggunakan CLI BlackSheep.
-
-Inisialisasi Project:
-
+Bash
 blacksheep create
-
-
-Konfigurasi Interactive CLI:
+Opsi konfigurasi pada prompt CLI:
 
 Project name: blacksheep_lb
 
@@ -73,45 +77,30 @@ Library to read settings: essentials-configuration
 
 App settings format: YAML
 
-Penjelasan Gambar 4:
-Menampilkan proses pembuatan struktur direktori project blacksheep_lb berbasiskan template API RESTful dengan fitur dokumentasi Swagger/OpenAPI aktif.
+Gambar 3.3: Inisialisasi proyek BlackSheep API via CLI.
 
-Instalasi Dependensi Project:
+Masuk ke direktori proyek dan install seluruh paket dependensi pendukung:
 
+Bash
 cd blacksheep_lb
 pip install -r requirements.txt
-
-
-Penjelasan Gambar 5:
-Menampilkan pemeriksaan dependensi dari file requirements.txt. Paket yang sudah ada pada virtual environment akan dilewati (Requirement already satisfied).
-
-Penjelasan Gambar 6:
-Menampilkan penyelesaian instalasi server ASGI (Asynchronous Server Gateway Interface) uvicorn dan uvloop untuk mengeksekusi aplikasi Python berkecepatan tinggi.
-
-Pengujian Aplikasi Secara Lokal (Development Server):
-
 python dev.py
+Gambar 3.4: Menjalankan server pengembang aplikasi BlackSheep pada port 44777.
 
+Pengujian Aplikasi Secara Lokal:
 
-Penjelasan Gambar 7:
-Server pengembang Uvicorn aktif dan berjalan pada alamat http://localhost:44777. Terminal juga mencatat permintaan (log access) dengan respons HTTP status 200 OK saat halaman /docs/ diakses.
+Aplikasi berjalan lokal pada port 44777 (http://localhost:44777/docs/).
 
-Verifikasi Dokumentasi API (Local):
+Saat diakses via browser pada endpoint /docs/, Swagger UI menampilkan dokumentasi endpoint API yaitu GET /api/examples dan POST /api/examples.
 
-Penjelasan Gambar 8:
-Tampilan browser saat mengakses http://localhost:44777/docs/. Menampilkan antarmuka OpenAPI Swagger UI untuk endpoint aplikasi blacksheep_lb API versi 0.0.1 dengan route sampel (GET /api/examples dan POST /api/examples).
+Gambar 3.5: Halaman OpenAPI / Swagger UI aplikasi BlackSheep lokal.
 
-Menghentikan Server Dev:
+3.3 Pengaturan Nginx Reverse Proxy & Load Balancer
+Untuk mendistribusikan beban trafik ke beberapa instance aplikasi, dibuat konfigurasi Nginx dan Docker Compose di direktori utama workspace-05.
 
-Penjelasan Gambar 9:
-Proses penghentian development server Uvicorn di terminal menggunakan kombinasi tombol Ctrl + C (Shutting down).
+1. Konfigurasi Nginx (nginx/Dockerfile & nginx/nginx.conf):
 
-3. Pembuatan Konfigurasi Docker & Nginx
-
-Menyusun file Dockerfile dan Nginx configuration untuk load balancing.
-
-Konfigurasi Dockerfile & Nginx (nginx/nginx.conf):
-
+Bash
 mkdir -p nginx
 cat << 'EOF' > nginx/Dockerfile
 FROM nginx
@@ -135,14 +124,9 @@ http {
     }
 }
 EOF
+2. File Orchestration (docker-compose.yml):
 
-
-Penjelasan Gambar 10:
-Pembuatan skrip nginx/Dockerfile dan file konfigurasi nginx/nginx.conf menggunakan perintah cat << 'EOF'. Blok upstream backend dikonfigurasi mengarah ke bs_app:80 yang akan berfungsi sebagai penyeimbang beban (load balancer).
-
-Konfigurasi Multi-Container (docker-compose.yml):
-
-cat << 'EOF' > docker-compose.yml
+YAML
 services:
   bs_app:
     build: ./blacksheep_lb
@@ -153,84 +137,62 @@ services:
       - "80:80"
     depends_on:
       - bs_app
-EOF
+Gambar 3.6: Pembuatan file konfigurasi Nginx dan docker-compose.yml.
 
+3.4 Eksekusi dan Pengujian Scaling (Load Balancing)
+Menjalankan Docker Compose dengan melakukan scaling layanan aplikasi menjadi 2 instance:
 
-Penjelasan Gambar 11:
-Menampilkan penulisan file docker-compose.yml untuk menghubungkan kontainer nginx (port 80) dengan layanan bs_app yang berjalan di jaringan Docker yang sama.
-
-4. Menjalankan Docker Compose dengan Auto-Scaling
-
-Mengompilasi image dan menjalankan beberapa instance kontainer aplikasi sekaligus.
-
-Eksekusi Build Container:
-
+Bash
 docker compose up --build -d --scale bs_app=2
+Gambar 3.7: Build image dan eksekusi scaling 2 instance bs_app.
 
+Hasil Status Container:
 
-Penjelasan Gambar 12:
-Proses kompilasi image kontainer workspace-05-nginx dan workspace-05-bs_app menggunakan Docker BuildKit.
+Layanan aplikasi memicu jalannya kontainer workspace-05-bs_app-1 dan workspace-05-bs_app-2.
 
-Penjelasan Gambar 13:
-Menampilkan tahap akhir pembuatan image dan pengaktifan kontainer. Opsi --scale bs_app=2 berhasil membuat dua instance kontainer backend: workspace-05-bs_app-1 dan workspace-05-bs_app-2, serta kontainer proxy nginx.
+Kontainer nginx bertindak sebagai pintu masuk utama pada port 80.
 
-Pengujian Akses Melalui Nginx:
+4. Failure Detection & High Availability (Toleransi Kegagalan)
+4.1 Simulasi High Availability (Pengujian Stop/Start Instance)
+1. Menghentikan Salah Satu Instance Aplikasi (bs_app-1):
 
-Penjelasan Gambar 14:
-Mengakses http://localhost/ pada browser. Tampilan menghasilkan pesan Resource not found (HTTP Status 404). Hal ini membuktikan Nginx pada port 80 berhasil meneruskan trafik ke aplikasi BlackSheep di backend (karena endpoint akar / tidak didefinisikan di controller).
-
-4.2 Failure Detection & Fault Tolerance
-
-Tahap ini bertujuan untuk menguji keandalan sistem dalam menangani kegagalan (failover) jika salah satu instance backend mati.
-
-1. Re-Build & Verifikasi Awal Status Kontainer
-
-docker compose up --build -d --scale bs_app=2
-
-
-Penjelasan Gambar 15:
-Memastikan lingkungan load balancing aktif secara penuh dengan 2 kontainer bs_app (Running) dan 1 kontainer nginx (Running) sebelum pengujian simulasi kerusakan dimulai.
-
-2. Simulasi Kegagalan Server (Stop Container)
-
-Menghentikan kontainer pertama secara paksa untuk merepresentasikan insiden server crash atau down.
-
+Bash
 docker stop workspace-05-bs_app-1
+Gambar 4.1: Menghentikan salah satu instance kontainer aplikasi.
 
+2. Pengujian Akses Browser (http://localhost/docs/):
 
-Penjelasan Gambar 16:
-Eksekusi perintah docker stop workspace-05-bs_app-1 pada terminal WSL. Output menampilkan nama workspace-05-bs_app-1, menandakan kontainer backend 1 telah mati.
+Hasil: Halaman Dokumentasi API tetap dapat diakses dengan normal tanpa adanya eror (Zero Downtime).
 
-3. Pengujian Ketersediaan Layanan (High Availability)
+Analisis: Nginx mendeteksi kegagalan pada bs_app-1 dan langsung mengalihkan seluruh trafik ke bs_app-2.
 
-Membuka kembali browser di alamat http://localhost/docs/.
+Gambar 4.2: Aplikasi tetap aktif melayani request via Nginx.
 
-Penjelasan Gambar 17:
-Halaman Swagger UI OpenAPI pada http://localhost/docs/ tetap dapat diakses dengan lancar tanpa error 502/504. Ini membuktikan mekanisme Fault Tolerance bekerja: Nginx secara otomatis mendeteksi matinya bs_app-1 dan mengalihkan seluruh trafik ke bs_app-2 yang masih aktif.
+3. Pengujian Endpoint API (GET & POST):
 
-4. Pemulihan Sistem (Recovery)
+Request GET /api/examples menghasilkan respon status 200 OK.
 
-Menyalakan kembali kontainer yang mati untuk mengembalikan kapasitas cluster ke kondisi normal.
+Request POST /api/examples berhasil menambahkan data dengan respon status 200 OK.
 
+Gambar 4.3: Uji coba request GET /api/examples pada Swagger UI.
+
+Gambar 4.4: Uji coba request POST /api/examples pada Swagger UI.
+
+4. Recovery Instance & Stopping Containers:
+Menyalakan kembali instance bs_app-1 dan menghentikan seluruh layanan setelah pengujian selesai:
+
+Bash
+# Menyalakan kembali instance bs_app-1
 docker start workspace-05-bs_app-1
+
+# Memeriksa status kontainer
 docker ps --format '{{.Image}} {{.Names}} {{.Status}}'
 
-
-Penjelasan Gambar 18:
-Menampilkan proses pengaktifan kembali kontainer (docker start workspace-05-bs_app-1) dan verifikasi status dengan docker ps. Terlihat workspace-05-bs_app-1 kembali aktif (Up 58 seconds), mengindikasikan pemulihan sistem (recovery) berjalan sukses.
-
-5. Pembersihan Lingkungan (Cleanup)
-
-Menghentikan dan menghapus seluruh kontainer serta jaringan virtual setelah praktikum selesai.
-
+# Mematikan seluruh environment
 docker compose down
+Gambar 4.5: Mengaktifkan kembali instance aplikasi lalu melakukan teardown environment dengan docker compose down.
 
+5. Kesimpulan
+Load Balancing: Nginx sebagai Reverse Proxy berhasil membagi beban request HTTP secara seimbang ke beberapa instance aplikasi backend (bs_app-1 dan bs_app-2).
 
-Penjelasan Gambar 19:
-Eksekusi perintah docker compose down. Seluruh kontainer (nginx, bs_app-1, bs_app-2) dan jaringan virtual (workspace-05_default) dihentikan dan dihapus dari sistem Docker (Removed).
-
-Kesimpulan Praktikum
-
-Load Balancing: Nginx berhasil dikonfigurasi sebagai Reverse Proxy dan Load Balancer yang mampu membagi beban permintaan ke multiple kontainer backend (bs_app-1 dan bs_app-2) yang di-scale menggunakan Docker Compose.
-
-Fault Tolerance: Sistem terbukti memiliki tingkat ketahanan kesalahan yang baik (High Availability). Ketika salah satu node backend mengalami kegagalan/mati, Nginx secara otomatis mengarahkan trafik ke node yang sehat tanpa menyebabkan gangguan layanan (downtime) bagi pengguna.
+High Availability & Fault Tolerance: Arsitektur ini membuktikan bahwa sistem memiliki kemampuan toleransi kegagalan. Jika salah satu server/instance aplikasi mati, Nginx secara fleksibel dan otomatis mengalihkan request ke server lain yang aktif tanpa mengganggu pengguna akhir (Zero Downtime).
