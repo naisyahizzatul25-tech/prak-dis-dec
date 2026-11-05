@@ -9,6 +9,7 @@
 * **Kelas:** Informatika IF 1 (Semester 3)
 * **Universitas:** Universitas Teknologi Digital Indonesia (UTDI)
 
+
 -Repository ini berisi laporan praktikum mengenai implementasi dan pengujian **Load Balancing** serta **Fault Tolerance** menggunakan framework Python ASGI BlackSheep, Nginx sebagai Reverse Proxy / Load Balancer, dan Docker Compose untuk kontainerisasi.
 
 ---
@@ -48,11 +49,11 @@ Langkah awal dimulai dengan penyiapan dependensi dasar pada sistem operasi Linux
 sudo apt update
 sudo apt install python3.14-venv python3-pip -y
 
-![Proses Instalasi Dependensi](path/to/gambar-3.1.png)
-*Gambar 3.1: Proses update repository dan instalasi paket python3.14-venv serta python3-pip pada terminal WSL/Linux.*
+![Proses Update dan Instalasi Paket](path/to/gambar-1.png)
+*Gambar 1: Proses update repository dan instalasi paket python3.14-venv serta python3-pip pada terminal.*
 
-**Penjelasan Gambar 3.1:**
-Perintah `sudo apt update` digunakan untuk menyegarkan daftar indeks paket repository Linux, sedangkan `sudo apt install python3.14-venv python3-pip -y` mengunduh dan menginstal alat manajemen lingkungan virtual Python serta package manager (`pip`). Hal ini diperlukan agar dependensi proyek terisolasi dari lingkungan sistem utama.
+**Penjelasan Gambar 1:**
+Perintah `sudo apt update` menyegarkan daftar indeks paket repository Linux, sedangkan `sudo apt install python3.14-venv python3-pip -y` mengunduh dan menginstal alat manajemen lingkungan virtual Python serta *package manager* (`pip`).
 
 Selanjutnya, dibuat direktori kerja `workspace-05`, pembuatan lingkungan virtual `.venv`, dan instalasi framework aplikasi web BlackSheep:
 
@@ -62,11 +63,14 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install blacksheep blacksheep-cli
 
-![Virtual Environment dan BlackSheep](path/to/gambar-3.2.png)
-*Gambar 3.2: Aktivasi virtual environment dan instalasi paket blacksheep beserta blacksheep-cli.*
+![Pembuatan Venv dan Download BlackSheep](path/to/gambar-2.png)
+*Gambar 2: Aktivasi virtual environment dan proses pengunduhan dependensi BlackSheep.*
 
-**Penjelasan Gambar 3.2:**
-Setelah mengaktifkan lingkungan virtual via `source .venv/bin/activate` (ditandai dengan prompt `(.venv)`), perintah `pip install blacksheep blacksheep-cli` mengunduh kerangka kerja BlackSheep beserta modul pendukungnya seperti `uvicorn`, `rodi`, `guardpost`, `h11`, dan `h2`.
+![Instalasi Selesai BlackSheep CLI](path/to/gambar-3.png)
+*Gambar 3: Konfirmasi sukses instalasi paket blacksheep dan blacksheep-cli.*
+
+**Penjelasan Gambar 2 & 3:**
+Setelah mengaktifkan lingkungan virtual via `source .venv/bin/activate` (ditandai dengan prompt `(.venv)`), perintah `pip install` memasang kerangka kerja BlackSheep beserta pustaka pendukung seperti `uvicorn`, `rodi`, `guardpost`, `h11`, dan `h2`.
 
 ---
 
@@ -83,11 +87,11 @@ blacksheep create
 - **Library to read settings**: `essentials-configuration`
 - **App settings format**: `YAML`
 
-![Inisialisasi Proyek BlackSheep](path/to/gambar-3.3.png)
-*Gambar 3.3: Proses inisialisasi struktur proyek blacksheep_lb menggunakan CLI.*
+![Inisialisasi Proyek BlackSheep](path/to/gambar-4.png)
+*Gambar 4: Inisialisasi struktur proyek blacksheep_lb berbasis template API via CLI.*
 
-**Penjelasan Gambar 3.3:**
-Perintah `blacksheep create` memicu wizard interaktif. Pilihan template `api` mengonstruksi struktur dasar proyek REST API berbasis arsitektur Controller dan OpenAPI (Swagger) dokumentasi.
+**Penjelasan Gambar 4:**
+Perintah `blacksheep create` memicu wizard interaktif. Pilihan template `api` mengonstruksi struktur dasar proyek REST API berbasis arsitektur Controller dan OpenAPI (Swagger).
 
 Masuk ke direktori proyek dan install seluruh paket dependensi pendukung:
 
@@ -95,21 +99,23 @@ cd blacksheep_lb
 pip install -r requirements.txt
 python dev.py
 
-![Menjalankan Dev Server](path/to/gambar-3.4.png)
-*Gambar 3.4: Menjalankan aplikasi web secara lokal pada port 44777 via Uvicorn.*
+![Instalasi Requirements Pydantic Uvicorn](path/to/gambar-5.png)
+*Gambar 5: Proses unduh dan verifikasi paket dari file requirements.txt.*
 
-**Penjelasan Gambar 3.4:**
-Menjalankan `python dev.py` akan memulai ASGI Web Server (`Uvicorn`) pada alamat local `http://localhost:44777/docs/`. Fitur reloader otomatis (*StatReload*) diaktifkan untuk memantau perubahan kode sumber selama tahap pengembangan.
+![Instalasi Paket Selesai](path/to/gambar-6.png)
+*Gambar 6: Berhasil menginstal modul pydantic, uvicorn, uvloop, dan cryptography.*
 
-**Pengujian Aplikasi Secara Lokal:**
-- Aplikasi berjalan lokal pada port `44777` (`http://localhost:44777/docs/`).
-- Saat diakses via browser pada endpoint `/docs/`, Swagger UI menampilkan dokumentasi endpoint API yaitu `GET /api/examples` dan `POST /api/examples`.
+![Menjalankan Server Lokal Dev](path/to/gambar-7.png)
+*Gambar 7: Menjalankan dev server Uvicorn pada port 44777 dengan StatReload.*
 
-![OpenAPI Swagger UI](path/to/gambar-3.5.png)
-*Gambar 3.5: Halaman Swagger UI OpenAPI interaktif pada browser.*
+![Swagger UI Dokumentasi API](path/to/gambar-8.png)
+*Gambar 8: Tampilan halaman OpenAPI / Swagger UI (http://localhost:44777/docs/).*
 
-**Penjelasan Gambar 3.5:**
-Tampilan antarmuka Swagger UI memverifikasi bahwa aplikasi BlackSheep berhasil berjalan dan secara otomatis menghasilkan dokumentasi API untuk endpoint `GET /api/examples` dan `POST /api/examples`.
+![Menghentikan Dev Server](path/to/gambar-9.png)
+*Gambar 9: Menghentikan proses server dev Uvicorn menggunakan kombinasi tombol Ctrl+C.*
+
+**Penjelasan Gambar 5 - 9:**
+Setelah memasang dependensi pendukung dari `requirements.txt`, aplikasi dijalankan secara lokal dengan `python dev.py`. Aplikasi berjalan pada port `44777` dan menampilkan endpoint `GET /api/examples` serta `POST /api/examples` di Swagger UI sebelum akhirnya dihentikan.
 
 ---
 
@@ -142,6 +148,9 @@ http {
 }
 EOF
 
+![Script Konfigurasi Nginx](path/to/gambar-10.png)
+*Gambar 10: Pembuatan direktori nginx, Dockerfile, dan nginx.conf menggunakan heredoc.*
+
 **2. File Orchestration (`docker-compose.yml`):**
 
 services:
@@ -155,11 +164,11 @@ services:
     depends_on:
       - bs_app
 
-![Konfigurasi Nginx dan Docker Compose](path/to/gambar-3.6.png)
-*Gambar 3.6: Script penyiapan direktori nginx, Dockerfile, nginx.conf, dan docker-compose.yml.*
+![Script Docker Compose](path/to/gambar-11.png)
+*Gambar 11: Pembuatan file docker-compose.yml untuk mendefinisikan kontainer bs_app dan nginx.*
 
-**Penjelasan Gambar 3.6:**
-Perintah heredoc (`cat << 'EOF'`) membuat file konfigurasi Nginx dan `docker-compose.yml`. Blok `upstream backend` mendefinisikan grup server aplikasi (`bs_app:80`), sementara `proxy_pass http://backend;` mengarahkan semua lalu lintas HTTP port 80 ke grup backend tersebut.
+**Penjelasan Gambar 10 & 11:**
+Script heredoc (`cat << 'EOF'`) digunakan untuk membuat file Dockerfile Nginx, `nginx.conf`, dan `docker-compose.yml`. Blok `upstream backend` merujuk pada kontainer `bs_app:80` yang akan didistribusikan oleh Nginx pada port `80`.
 
 ---
 
@@ -168,15 +177,17 @@ Menjalankan Docker Compose dengan melakukan scaling layanan aplikasi menjadi **2
 
 docker compose up --build -d --scale bs_app=2
 
-![Build dan Scaling Instance](path/to/gambar-3.7.png)
-*Gambar 3.7: Proses build image Docker dan scaling kontainer bs_app menjadi 2 instance.*
+![Proses Build Docker Compose](path/to/gambar-12.png)
+*Gambar 12: Log proses pembuatan image Docker untuk Nginx dan Python Server Builder.*
 
-**Penjelasan Gambar 3.7:**
-Perintah `docker compose up --build -d --scale bs_app=2` membangun image Docker untuk aplikasi Python (`bs_app`) dan Nginx. Parameter `--scale bs_app=2` secara otomatis mereplikasi kontainer aplikasi menjadi dua instance aktif: `workspace-05-bs_app-1` dan `workspace-05-bs_app-2`.
+![Status Selesai Container Started](path/to/gambar-13.png)
+*Gambar 13: Kontainer workspace-05-bs_app-1, workspace-05-bs_app-2, dan nginx berhasil dijalankan.*
 
-**Hasil Status Container:**
-- Layanan aplikasi memicu jalannya kontainer `workspace-05-bs_app-1` dan `workspace-05-bs_app-2`.
-- Kontainer `nginx` bertindak sebagai pintu masuk utama pada port 80.
+![Uji Akses Root Nginx Resource Not Found](path/to/gambar-14.png)
+*Gambar 14: Akses browser ke http://localhost/ menghasilkan respons Resource not found.*
+
+**Penjelasan Gambar 12 - 14:**
+Docker Compose membangun image dan menjalankan dua kontainer aplikasi backend (`workspace-05-bs_app-1` dan `workspace-05-bs_app-2`) serta satu kontainer `nginx`. Pengujian akses ke `http://localhost/` (port 80) menghasilkan `Resource not found` karena rute utama `/` belum didefinisikan pada template API BlackSheep.
 
 ---
 
@@ -184,51 +195,64 @@ Perintah `docker compose up --build -d --scale bs_app=2` membangun image Docker 
 
 ### 4.1 Simulasi High Availability (Pengujian Stop/Start Instance)
 
-**1. Menghentikan Salah Satu Instance Aplikasi (`bs_app-1`):**
+**1. Re-deploy & Menghentikan Salah Satu Instance Aplikasi (`bs_app-1`):**
 
+docker compose up --build -d --scale bs_app=2
 docker stop workspace-05-bs_app-1
 
-![Menghentikan Instance Aplikasi](path/to/gambar-4.1.png)
-*Gambar 4.1: Eksekusi perintah docker stop untuk mematikan salah satu kontainer aplikasi.*
+![Pengujian Scaling 2 Instance Up](path/to/gambar-15.png)
+*Gambar 15: Menjalankan ulang docker compose up --scale bs_app=2.*
 
-**Penjelasan Gambar 4.1:**
-Untuk menguji skenario kegagalan (*fault tolerance*), salah satu kontainer backend (`workspace-05-bs_app-1`) dihentikan secara paksa menggunakan `docker stop`. Ini mensimulasikan kegagalan server fisik atau crash aplikasi di lingkungan produksi.
+![Mematikan Container bs_app-1](path/to/gambar-16.png)
+*Gambar 16: Eksekusi perintah docker stop workspace-05-bs_app-1 untuk mematikan instance 1.*
 
 **2. Pengujian Akses Browser (`http://localhost/docs/`):**
-- **Hasil**: Halaman Dokumentasi API tetap dapat diakses dengan normal tanpa adanya eror (*Zero Downtime*).
-- **Analisis**: Nginx mendeteksi kegagalan pada `bs_app-1` dan langsung mengalihkan seluruh trafik ke `bs_app-2`.
+- **Hasil**: Halaman Dokumentasi API tetap dapat diakses dengan normal tanpa eror (*Zero Downtime*).
+- **Analisis**: Nginx mendeteksi `bs_app-1` mati dan mengalihkan seluruh trafik ke `bs_app-2`.
 
-![Aplikasi Tetap Aktif Via Nginx](path/to/gambar-4.2.png)
-*Gambar 4.2: Antarmuka Swagger API yang tetap responsif meskipun 1 instance backend mati.*
-
-**Penjelasan Gambar 4.2:**
-Browser mengakses `http://localhost/docs/` pada port 80. Walaupun `bs_app-1` telah dimatikan, Nginx sebagai Load Balancer membelokkan lalu lintas secara transparan ke instance `bs_app-2` yang masih hidup. Pengguna tidak mengalami downtime atau kegagalan akses (*High Availability*).
+![Aplikasi Tetap Aktif di Port 80 Docs](path/to/gambar-17.png)
+*Gambar 17: Halaman Swagger UI OpenAPI yang tetap aktif melayani request via Nginx.*
 
 **3. Pengujian Endpoint API (GET & POST):**
 - Request `GET /api/examples` menghasilkan respon status `200 OK`.
 - Request `POST /api/examples` berhasil menambahkan data dengan respon status `200 OK`.
 
-![Uji Coba GET API](path/to/gambar-4.3.png)
-*Gambar 3.4.3: Pengujian pengiriman request GET /api/examples pada Swagger UI.*
+![Uji Coba Request GET API](path/to/gambar-18.png)
+*Gambar 18: Eksekusi request GET /api/examples mengembalikan status 200 OK.*
 
-![Uji Coba POST API](path/to/gambar-4.4.png)
-*Gambar 3.4.4: Pengujian pengiriman request POST /api/examples pada Swagger UI.*
-
-**Penjelasan Gambar 3.4.3 & 3.4.4:**
-Eksekusi tombol *Try it out* pada endpoint `GET` dan `POST` mengembalikan status HTTP `200 OK` beserta payload data JSON. Ini membuktikan bahwa layanan backend yang tersisa (`bs_app-2`) berfungsi penuh dalam mengolah request read maupun write.
+![Uji Coba Request POST API](path/to/gambar-19.png)
+*Gambar 19: Eksekusi request POST /api/examples mengembalikan payload JSON sukses.*
 
 **4. Recovery Instance & Stopping Containers:**
-Menyalakan kembali instance `bs_app-1` dan menghentikan seluruh layanan setelah pengujian selesai:
+Menyalakan kembali instance `bs_app-1`, mengecek status kontainer, dan menghentikan seluruh layanan setelah pengujian selesai:
 
 docker start workspace-05-bs_app-1
 docker ps --format '{{.Image}} {{.Names}} {{.Status}}'
 docker compose down
 
-![Recovery dan Teardown Environment](path/to/gambar-4.5.png)
-*Gambar 4.5: Menyalakan kembali kontainer (recovery) dan melakukan teardown environment.*
+![Recovery dan Shutdown Container](path/to/gambar-20.png)
+*Gambar 20: Menyalakan kembali bs_app-1 dan mematikan seluruh environment dengan docker compose down.*
 
-**Penjelasan Gambar 4.5:**
-Perintah `docker start workspace-05-bs_app-1` mengembalikan kontainer ke status `Up` (*recovery*). Nginx secara otomatis memasukkan kembali instance tersebut ke perputaran pembagian beban. Akhirnya, `docker compose down` membersihkan semua kontainer dan jaringan virtual yang telah dibuat.
+---
+
+### 4.2 Failure Detection (Verifikasi Pengujian Ulang)
+
+Pengujian ulang dilakukan untuk memastikan bahwa deteksi kegagalan berjalan konsisten saat seluruh lingkungan kontainer diinisialisasi kembali.
+
+![Pengujian Ulang Build Scaling](path/to/gambar-21.png)
+*Gambar 21: Eksekusi ulang docker compose up untuk memverifikasi modul failure detection.*
+
+![Verifikasi Halaman Docs Aktif](path/to/gambar-22.png)
+*Gambar 22: Verifikasi halaman Swagger UI API kembali aktif.*
+
+![Pengujian Respon Endpoint GET](path/to/gambar-23.png)
+*Gambar 23: Verifikasi ulang respons 200 OK pada request GET /api/examples.*
+
+![Recovery dan Teardown Akhir Environment](path/to/gambar-24.png)
+*Gambar 24: Menjalankan docker stop, docker start, dan teardown akhir dengan docker compose down.*
+
+**Penjelasan Gambar 15 - 24:**
+Rangkaian gambar ini membuktikan prinsip *Fault Tolerance* dan *High Availability*. Ketika salah satu backend (`bs_app-1`) dimatikan via `docker stop`, Nginx secara otomatis mengalihkan request pengguna ke `bs_app-2` yang aktif tanpa memicu *downtime*. Saat instance `bs_app-1` dihidupkan kembali via `docker start`, Nginx memasukkan kembali instance tersebut ke alokasi pembagian beban kerja secara dinamis.
 
 ---
 
