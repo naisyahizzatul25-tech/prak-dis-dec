@@ -49,7 +49,7 @@ Langkah awal dimulai dengan penyiapan dependensi dasar pada sistem operasi Linux
 sudo apt update
 sudo apt install python3.14-venv python3-pip -y
 
-![Proses Update dan Instalasi Paket](path/to/gambar-1.png)
+<img width="940" height="670" alt="image" src="https://github.com/user-attachments/assets/b45efdc4-a767-4937-bdc8-b767d9c76c75" />
 *Gambar 1: Proses update repository dan instalasi paket python3.14-venv serta python3-pip pada terminal.*
 
 **Penjelasan Gambar 1:**
@@ -63,10 +63,10 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install blacksheep blacksheep-cli
 
-![Pembuatan Venv dan Download BlackSheep](path/to/gambar-2.png)
+<img width="940" height="682" alt="image" src="https://github.com/user-attachments/assets/33381888-d952-4016-b0b7-750b48f21569" />
 *Gambar 2: Aktivasi virtual environment dan proses pengunduhan dependensi BlackSheep.*
 
-![Instalasi Selesai BlackSheep CLI](path/to/gambar-3.png)
+<img width="940" height="393" alt="image" src="https://github.com/user-attachments/assets/94586a07-56d4-4b87-b14b-204fc9b59a45" />
 *Gambar 3: Konfirmasi sukses instalasi paket blacksheep dan blacksheep-cli.*
 
 **Penjelasan Gambar 2 & 3:**
@@ -87,7 +87,7 @@ blacksheep create
 - **Library to read settings**: `essentials-configuration`
 - **App settings format**: `YAML`
 
-![Inisialisasi Proyek BlackSheep](path/to/gambar-4.png)
+<img width="940" height="446" alt="image" src="https://github.com/user-attachments/assets/cabd6013-3b79-4d3f-97f0-d2b1d530ab71" />
 *Gambar 4: Inisialisasi struktur proyek blacksheep_lb berbasis template API via CLI.*
 
 **Penjelasan Gambar 4:**
@@ -99,19 +99,19 @@ cd blacksheep_lb
 pip install -r requirements.txt
 python dev.py
 
-![Instalasi Requirements Pydantic Uvicorn](path/to/gambar-5.png)
+<img width="940" height="745" alt="image" src="https://github.com/user-attachments/assets/6b8c1c6b-e3b9-4682-90c3-9c12a2a3216f" />
 *Gambar 5: Proses unduh dan verifikasi paket dari file requirements.txt.*
 
-![Instalasi Paket Selesai](path/to/gambar-6.png)
+<img width="940" height="762" alt="image" src="https://github.com/user-attachments/assets/c87ec91a-c464-442f-94d7-a9828e15e353" />
 *Gambar 6: Berhasil menginstal modul pydantic, uvicorn, uvloop, dan cryptography.*
 
-![Menjalankan Server Lokal Dev](path/to/gambar-7.png)
+<img width="940" height="430" alt="image" src="https://github.com/user-attachments/assets/7b54e87f-4afa-4a19-bfc3-f56c081392c2" />
 *Gambar 7: Menjalankan dev server Uvicorn pada port 44777 dengan StatReload.*
 
-![Swagger UI Dokumentasi API](path/to/gambar-8.png)
+<img width="940" height="265" alt="image" src="https://github.com/user-attachments/assets/2ba4a8b9-c479-4547-b6ac-5a08a74a66c8" />
 *Gambar 8: Tampilan halaman OpenAPI / Swagger UI (http://localhost:44777/docs/).*
 
-![Menghentikan Dev Server](path/to/gambar-9.png)
+<img width="940" height="144" alt="image" src="https://github.com/user-attachments/assets/821a5a7e-255f-4273-8c8e-89ea8519511a" />
 *Gambar 9: Menghentikan proses server dev Uvicorn menggunakan kombinasi tombol Ctrl+C.*
 
 **Penjelasan Gambar 5 - 9:**
@@ -148,7 +148,7 @@ http {
 }
 EOF
 
-![Script Konfigurasi Nginx](path/to/gambar-10.png)
+<img width="940" height="572" alt="image" src="https://github.com/user-attachments/assets/f13c788f-f811-4e63-bc9a-bdf9017883de" />
 *Gambar 10: Pembuatan direktori nginx, Dockerfile, dan nginx.conf menggunakan heredoc.*
 
 **2. File Orchestration (`docker-compose.yml`):**
@@ -164,7 +164,7 @@ services:
     depends_on:
       - bs_app
 
-![Script Docker Compose](path/to/gambar-11.png)
+<img width="940" height="339" alt="image" src="https://github.com/user-attachments/assets/f82d37d0-0dbe-4bc1-8b3e-588eeaa4527a" />
 *Gambar 11: Pembuatan file docker-compose.yml untuk mendefinisikan kontainer bs_app dan nginx.*
 
 **Penjelasan Gambar 10 & 11:**
@@ -177,13 +177,13 @@ Menjalankan Docker Compose dengan melakukan scaling layanan aplikasi menjadi **2
 
 docker compose up --build -d --scale bs_app=2
 
-![Proses Build Docker Compose](path/to/gambar-12.png)
+<img width="940" height="969" alt="image" src="https://github.com/user-attachments/assets/1b6631e0-dcba-4659-98a7-cee5e180855e" />
 *Gambar 12: Log proses pembuatan image Docker untuk Nginx dan Python Server Builder.*
 
-![Status Selesai Container Started](path/to/gambar-13.png)
+<img width="847" height="553" alt="image" src="https://github.com/user-attachments/assets/40a0b7ca-7d00-40cf-a122-2efc751237d9" />
 *Gambar 13: Kontainer workspace-05-bs_app-1, workspace-05-bs_app-2, dan nginx berhasil dijalankan.*
 
-![Uji Akses Root Nginx Resource Not Found](path/to/gambar-14.png)
+<img width="651" height="310" alt="image" src="https://github.com/user-attachments/assets/4089a4ae-3179-42b3-910b-42cf548523c2" />
 *Gambar 14: Akses browser ke http://localhost/ menghasilkan respons Resource not found.*
 
 **Penjelasan Gambar 12 - 14:**
@@ -200,27 +200,27 @@ Docker Compose membangun image dan menjalankan dua kontainer aplikasi backend (`
 docker compose up --build -d --scale bs_app=2
 docker stop workspace-05-bs_app-1
 
-![Pengujian Scaling 2 Instance Up](path/to/gambar-15.png)
+<img width="854" height="969" alt="image" src="https://github.com/user-attachments/assets/667a3946-ee87-428e-bf6f-3df245cda840" />
 *Gambar 15: Menjalankan ulang docker compose up --scale bs_app=2.*
 
-![Mematikan Container bs_app-1](path/to/gambar-16.png)
+<img width="940" height="107" alt="image" src="https://github.com/user-attachments/assets/d9d2bbd0-a6b2-4600-97e4-b5d79e102973" />
 *Gambar 16: Eksekusi perintah docker stop workspace-05-bs_app-1 untuk mematikan instance 1.*
 
 **2. Pengujian Akses Browser (`http://localhost/docs/`):**
 - **Hasil**: Halaman Dokumentasi API tetap dapat diakses dengan normal tanpa eror (*Zero Downtime*).
 - **Analisis**: Nginx mendeteksi `bs_app-1` mati dan mengalihkan seluruh trafik ke `bs_app-2`.
 
-![Aplikasi Tetap Aktif di Port 80 Docs](path/to/gambar-17.png)
+<img width="940" height="265" alt="image" src="https://github.com/user-attachments/assets/7fe31d98-baed-4080-8aeb-96b7d6fcdaf3" />
 *Gambar 17: Halaman Swagger UI OpenAPI yang tetap aktif melayani request via Nginx.*
 
 **3. Pengujian Endpoint API (GET & POST):**
 - Request `GET /api/examples` menghasilkan respon status `200 OK`.
 - Request `POST /api/examples` berhasil menambahkan data dengan respon status `200 OK`.
 
-![Uji Coba Request GET API](path/to/gambar-18.png)
+<img width="940" height="462" alt="image" src="https://github.com/user-attachments/assets/87289906-497f-4661-a59f-54fdf89bb0a9" />
 *Gambar 18: Eksekusi request GET /api/examples mengembalikan status 200 OK.*
 
-![Uji Coba Request POST API](path/to/gambar-19.png)
+<img width="940" height="493" alt="image" src="https://github.com/user-attachments/assets/e774e56f-7068-4af3-8397-b58baa74540e" />
 *Gambar 19: Eksekusi request POST /api/examples mengembalikan payload JSON sukses.*
 
 **4. Recovery Instance & Stopping Containers:**
@@ -230,8 +230,10 @@ docker start workspace-05-bs_app-1
 docker ps --format '{{.Image}} {{.Names}} {{.Status}}'
 docker compose down
 
-![Recovery dan Shutdown Container](path/to/gambar-20.png)
-*Gambar 20: Menyalakan kembali bs_app-1 dan mematikan seluruh environment dengan docker compose down.*
+<img width="940" height="175" alt="image" src="https://github.com/user-attachments/assets/9c00bc78-9426-49d5-8a41-aeca70137f4d" />
+<img width="940" height="168" alt="image" src="https://github.com/user-attachments/assets/234c2458-7d47-4c73-b662-ae21e40fc978" />
+
+*Gambar 20 dan 21: Menyalakan kembali bs_app-1 dan mematikan seluruh environment dengan docker compose down.*
 
 ---
 
@@ -239,17 +241,20 @@ docker compose down
 
 Pengujian ulang dilakukan untuk memastikan bahwa deteksi kegagalan berjalan konsisten saat seluruh lingkungan kontainer diinisialisasi kembali.
 
-![Pengujian Ulang Build Scaling](path/to/gambar-21.png)
+<img width="866" height="1010" alt="image" src="https://github.com/user-attachments/assets/48d3f58f-978c-4a0f-b03d-750a6df2b9b8" />
 *Gambar 21: Eksekusi ulang docker compose up untuk memverifikasi modul failure detection.*
 
-![Verifikasi Halaman Docs Aktif](path/to/gambar-22.png)
+<img width="940" height="271" alt="image" src="https://github.com/user-attachments/assets/fb6ddaef-bf04-416c-bf5b-59f1d70c1fa9" />
 *Gambar 22: Verifikasi halaman Swagger UI API kembali aktif.*
 
-![Pengujian Respon Endpoint GET](path/to/gambar-23.png)
+<img width="940" height="463" alt="image" src="https://github.com/user-attachments/assets/1fbbb873-80e3-48bc-b043-739ed3e5daf1" />
 *Gambar 23: Verifikasi ulang respons 200 OK pada request GET /api/examples.*
 
-![Recovery dan Teardown Akhir Environment](path/to/gambar-24.png)
-*Gambar 24: Menjalankan docker stop, docker start, dan teardown akhir dengan docker compose down.*
+<img width="940" height="505" alt="image" src="https://github.com/user-attachments/assets/6b9b4956-9bc2-4264-b35e-56cfa05080d5" />
+*Gambar 24: Verifikasi ulang respons 200 OK pada request POST /api/examples.*
+
+<img width="940" height="234" alt="image" src="https://github.com/user-attachments/assets/d37ef7c2-a297-4e1e-b3d9-371446a4ac37" />
+*Gambar 25: Menjalankan docker stop, docker start, dan teardown akhir dengan docker compose down.*
 
 **Penjelasan Gambar 15 - 24:**
 Rangkaian gambar ini membuktikan prinsip *Fault Tolerance* dan *High Availability*. Ketika salah satu backend (`bs_app-1`) dimatikan via `docker stop`, Nginx secara otomatis mengalihkan request pengguna ke `bs_app-2` yang aktif tanpa memicu *downtime*. Saat instance `bs_app-1` dihidupkan kembali via `docker start`, Nginx memasukkan kembali instance tersebut ke alokasi pembagian beban kerja secara dinamis.
