@@ -1,4 +1,15 @@
-Repository ini berisi laporan praktikum mengenai implementasi dan pengujian **Load Balancing** serta **Fault Tolerance** menggunakan framework Python ASGI BlackSheep, Nginx sebagai Reverse Proxy / Load Balancer, dan Docker Compose untuk kontainerisasi.
+# Laporan Praktikum Sistem Terdistribusi dan Terdesentralisasi
+
+## Laporan Praktikum Modul 5: Fault Tolerance & Load Balancing
+
+### Identitas Mahasiswa
+
+* **Nama:** Naisyah Izzatul Jannah K.
+* **NIM:** 255410040
+* **Kelas:** Informatika IF 1 (Semester 3)
+* **Universitas:** Universitas Teknologi Digital Indonesia (UTDI)
+
+-Repository ini berisi laporan praktikum mengenai implementasi dan pengujian **Load Balancing** serta **Fault Tolerance** menggunakan framework Python ASGI BlackSheep, Nginx sebagai Reverse Proxy / Load Balancer, dan Docker Compose untuk kontainerisasi.
 
 ---
 
