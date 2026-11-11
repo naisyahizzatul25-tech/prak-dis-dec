@@ -1,4 +1,6 @@
-# Laporan Praktikum Modul 6: Instalasi & Konfigurasi Apache Hadoop Single-Node Cluster (HDFS & YARN) di WSL
+# Laporan Praktikum Sistem Terdistribusi dan Terdesentralisasi
+
+## Laporan Praktikum Modul 6: Instalasi & Konfigurasi Apache Hadoop Single-Node Cluster (HDFS & YARN) di WSL
 
 ### Identitas Mahasiswa
 
