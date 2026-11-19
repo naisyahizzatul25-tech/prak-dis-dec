@@ -66,22 +66,22 @@ Diagram di atas membandingkan pembagian tanggung jawab pengelolaan 9 lapisan sis
 ### Langkah 1: Membuat Direktori Kerja
 Membuat direktori `$HOME/src` sebagai ruang kerja utama dan masuk ke dalamnya menggunakan perintah `mkdir -p $HOME/src && cd $HOME/src`.
 
-![Membuat Direktori Kerja](images/01-buat-direktori.png)
+<img width="726" height="116" alt="image" src="https://github.com/user-attachments/assets/016d669e-698b-4767-b6be-3f0edd40afcd" />
 
 ### Langkah 2: Clone Repositori Flask dari GitHub
 Mengunduh *source code* resmi Flask menggunakan `git clone https://github.com/pallets/flask`. Pada percobaan ini muncul pesan `destination path 'flask' already exists`, yang menandakan repositori `flask` sudah tersedia di dalam direktori `~/src`.
 
-![Clone Repositori Flask](images/02-git-clone.png)
+<img width="940" height="86" alt="image" src="https://github.com/user-attachments/assets/80f055f5-0104-48c0-835e-2f267a873f29" />
 
 ### Langkah 3: Menyalin Direktori Tutorial
 Menyalin folder contoh aplikasi blog `examples/tutorial` menjadi folder proyek tersendiri bernama `flask-app` menggunakan perintah `cp -R ~/src/flask/examples/tutorial flask-app`.
 
-![Salin Direktori Tutorial](images/03-copy-tutorial.png)
+<img width="940" height="95" alt="image" src="https://github.com/user-attachments/assets/e51e58a0-306f-47ac-96dd-80ef8bd4a43a" />
 
 ### Langkah 4: Verifikasi Isi Direktori & Masuk ke `flask-app`
 Memeriksa daftar direktori dengan `ls -la` untuk memastikan folder `flask-app` berhasil terbentuk, kemudian masuk ke dalam direktori proyek menggunakan `cd flask-app`.
 
-![Cek Isi Direktori](images/04-cek-direktori.png)
+<img width="864" height="297" alt="image" src="https://github.com/user-attachments/assets/5ad3063f-740d-4db0-b482-f3a81a607ebe" />
 
 ---
 
@@ -90,17 +90,17 @@ Memeriksa daftar direktori dengan `ls -la` untuk memastikan folder `flask-app` b
 ### Langkah 1: Membuat Environment dengan `uv`
 Membuat *virtual environment* menggunakan manajer paket `uv` dengan interpreter **CPython 3.14.4** (`uv venv --python 3.14.4`). Karena `.venv` sudah ada sebelumnya, sistem menanyakan konfirmasi penggantian dan dijawab `yes`.
 
-![Membuat Virtual Environment](images/05-uv-venv.png)
+<img width="940" height="165" alt="image" src="https://github.com/user-attachments/assets/6ad0a08e-66df-4a78-9126-0d4ad9a38057" />
 
 ### Langkah 2: Mengaktifkan Virtual Environment
 Mengaktifkan *virtual environment* dengan menjalankan `source .venv/bin/activate`. *Prompt* terminal berubah menjadi `(flask-app) acer@LAPTOP-8F38RLV8:~/src/flask-app$`, menandakan *environment* terisolasi telah aktif.
 
-![Mengaktifkan Virtual Environment](images/06-activate-venv.png)
+<img width="940" height="79" alt="image" src="https://github.com/user-attachments/assets/c5fd1985-73bb-40fb-ae06-174080f71f6c" />
 
 ### Langkah 3: Memeriksa Struktur Direktori Proyek
 Menjalankan `ls -la` untuk memverifikasi isi proyek. Terlihat folder `.venv`, `flaskr` (kode utama aplikasi), `pyproject.toml` (konfigurasi paket), `tests`, serta file pendukung lainnya.
 
-![Struktur File Proyek](images/07-struktur-file.png)
+<img width="940" height="374" alt="image" src="https://github.com/user-attachments/assets/eca21819-e65d-4278-8d40-716c05acb8a9" />
 
 ---
 
@@ -109,37 +109,37 @@ Menjalankan `ls -la` untuk memverifikasi isi proyek. Terlihat folder `.venv`, `f
 ### Langkah 1: Instalasi Paket Proyek (`uv pip install -e .`)
 Menginstal proyek `flaskr` beserta 8 dependensi utamanya (`flask 3.1.3`, `werkzeug 3.1.9`, `jinja2 3.1.6`, `click 8.5.1`, `blinker`, `itsdangerous`, `markupsafe`) dalam mode *editable* hanya dalam waktu 16ms.
 
-![Instalasi Paket dengan uv](images/08-uv-pip-install.png)
+<img width="940" height="384" alt="image" src="https://github.com/user-attachments/assets/fa483aa7-82ec-4bf3-a88c-426e2af907b5" />
 
 ### Langkah 2: Inisialisasi Database SQLite
 Menjalankan perintah `flask --app flaskr init-db` untuk membuat skema tabel basis data SQLite. Terminal menampilkan pesan konfirmasi `Initialized the database.`.
 
-![Inisialisasi Database](images/09-init-db.png)
+<img width="940" height="83" alt="image" src="https://github.com/user-attachments/assets/bf05d0b1-5ecc-4eb9-b59d-7fc4c2946b6b" />
 
 ### Langkah 3: Menjalankan Server Pengembangan Flask
 Menjalankan aplikasi secara lokal menggunakan perintah `flask --app flaskr run`. Server aktif pada alamat lokal `http://127.0.0.1:5000`.
 
-![Menjalankan Server Flask Lokal](images/10-flask-run-lokal.png)
+<img width="940" height="102" alt="image" src="https://github.com/user-attachments/assets/18d07907-845a-4a04-b9e8-4ba3da3ca06f" />
 
 ### Langkah 4: Pengujian Aplikasi pada Browser
 Membuka alamat `http://localhost:5000` di browser Windows untuk memverifikasi seluruh fitur aplikasi berjalan dengan baik:
 
 * **Halaman Utama (Posts):** Menampilkan daftar postingan serta navigasi *Register* dan *Log In*.  
-  ![Halaman Utama Localhost 5000](images/11-browser-5000-home.png)
+ <img width="940" height="142" alt="image" src="https://github.com/user-attachments/assets/d2e58e24-f54b-44f9-9f46-9c7abb1b3b04" />
 
 * **Halaman Register (`/auth/register`):** Form pendaftaran akun pengguna baru (*Username* dan *Password*).  
-  ![Halaman Register Localhost 5000](images/12-browser-5000-register.png)
+  <img width="940" height="330" alt="image" src="https://github.com/user-attachments/assets/8f162d71-7e6c-4704-9969-0883281d4dc2" />
 
 * **Halaman Log In (`/auth/login`):** Form masuk pengguna yang telah terdaftar.  
-  ![Halaman Login Localhost 5000](images/13-browser-5000-login.png)
+<img width="940" height="319" alt="image" src="https://github.com/user-attachments/assets/03e02a00-c5e7-42f5-8461-5ce880413db6" />
 
 * **Log HTTP Request di Terminal:** Terminal mencatat setiap permintaan `GET` ke halaman `/`, `/auth/register`, `/auth/login`, dan aset statis dengan kode status `200` (berhasil).  
-  ![Log Terminal Server Lokal](images/14-log-server-lokal.png)
+ <img width="940" height="310" alt="image" src="https://github.com/user-attachments/assets/32ece980-53ce-41f0-8991-d8f542864452" />
 
 ### Langkah 5: Menghentikan Server Lokal
 Menghentikan proses server pengembangan Flask di terminal WSL dengan menekan kombinasi tombol **`Ctrl + C`** (`^C`) sebelum melanjutkan ke tahap *containerization*.
 
-![Menghentikan Server Lokal](images/15-stop-server-lokal.png)
+<img width="940" height="323" alt="image" src="https://github.com/user-attachments/assets/925a7e97-b9df-474f-876d-c77d60e7bd2c" />
 
 ---
 
@@ -148,7 +148,8 @@ Menghentikan proses server pengembangan Flask di terminal WSL dengan menekan kom
 ### Langkah 3.1: Membuat `Dockerfile`
 Membuat berkas konfigurasi `Dockerfile` di direktori *root* proyek menggunakan editor `nano Dockerfile`.
 
-![Membuka Editor Nano Dockerfile](images/16-nano-dockerfile.png)
+<img width="940" height="53" alt="image" src="https://github.com/user-attachments/assets/9a3e46dd-e746-48c7-9afc-0f5a1f8ff0a8" />
+
 
 Isi konfigurasi `Dockerfile` yang digunakan untuk membangun *image*:
 
@@ -167,7 +168,7 @@ EXPOSE 5000
 CMD ["flask", "--app", "flaskr", "run", "--host=0.0.0.0", "--port=5000"]
 ```
 
-![Isi Konfigurasi Dockerfile](images/17-isi-dockerfile.png)
+<img width="940" height="479" alt="image" src="https://github.com/user-attachments/assets/83faac6a-829e-4647-8b22-3b3d034fbd47" />
 
 **Penjelasan Instruksi Dockerfile:**
 * `FROM python:3.14`: Menggunakan *base image* resmi Python 3.14.
@@ -180,17 +181,17 @@ CMD ["flask", "--app", "flaskr", "run", "--host=0.0.0.0", "--port=5000"]
 ### Langkah 3.2: Memastikan Layanan Docker Aktif
 Karena menggunakan **Docker Desktop** di Windows yang sudah terintegrasi dengan WSL2, layanan *Docker daemon* langsung aktif tanpa perlu menjalankan `systemctl start docker`. Pengecekan dilakukan dengan perintah `docker ps` yang berhasil menampilkan status *container* yang sedang berjalan.
 
-![Verifikasi Docker Aktif](images/18-docker-ps.png)
+<img width="940" height="129" alt="image" src="https://github.com/user-attachments/assets/8bcc98a8-99d0-4953-9e21-efae4e9db962" />
 
 ### Langkah 3.3: Membangun Docker Image (`docker build`)
 Menjalankan perintah `docker build -f Dockerfile -t flaskr:1.0.0 .` untuk membangun *image* bernama `flaskr` dengan tag `1.0.0`. Seluruh 6 tahapan *build* selesai dengan status `FINISHED` dan menghasilkan *image* `docker.io/library/flaskr:1.0.0`.
 
-![Proses Build Docker Image](images/19-docker-build.png)
+<img width="940" height="535" alt="image" src="https://github.com/user-attachments/assets/d099787f-84b2-4055-9971-006f54ba648e" />
 
 ### Langkah 3.4: Verifikasi Image Terbentuk
 Memeriksa daftar *image* lokal menggunakan `docker image ls`. Terlihat *image* **`flaskr:1.0.0`** dengan ID `58b2fed8c574` dan ukuran `1.65GB` telah berhasil terdaftar.
 
-![Daftar Docker Image](images/20-docker-image-ls.png)
+<img width="940" height="111" alt="image" src="https://github.com/user-attachments/assets/cd3ee2db-76ad-497d-8868-5d0276561817" />
 
 ---
 
@@ -199,21 +200,22 @@ Memeriksa daftar *image* lokal menggunakan `docker image ls`. Terlihat *image* *
 ### Langkah 4.1: Menjalankan Container dengan Port Mapping
 Menjalankan *image* `flaskr:1.0.0` menjadi *container* aktif menggunakan perintah `docker run -p 5001:5000 flaskr:1.0.0`. Perintah `-p 5001:5000` memetakan port `5000` di dalam *container* ke port `5001` pada *localhost* host Windows/WSL.
 
-![Menjalankan Docker Container](images/21-docker-run.png)
+<img width="940" height="131" alt="image" src="https://github.com/user-attachments/assets/8e7b9254-0066-4e0e-a77e-20561ddc98aa" />
 
 ### Langkah 4.2: Pengujian Containerized App pada Browser
 Mengakses aplikasi melalui port hasil *mapping* yaitu **`http://localhost:5001`**:
 
 * **Halaman Register (`http://localhost:5001/auth/register`):** Aplikasi berjalan normal dari dalam *container* Docker.  
-  ![Halaman Register Container Port 5001](images/22-browser-5001-register.png)
+  <img width="940" height="274" alt="image" src="https://github.com/user-attachments/assets/08381188-a856-4978-97b7-7b5eb3f63d31" />
 
 * **Halaman Log In (`http://localhost:5001/auth/login`):** Halaman autentikasi dapat diakses dan merespons permintaan dengan baik.  
-  ![Halaman Login Container Port 5001](images/23-browser-5001-login.png)
+ <img width="940" height="271" alt="image" src="https://github.com/user-attachments/assets/2023a9f2-fda9-4892-aafb-81485b085ef8" />
 
 ### Langkah 4.3: Log Akses Container & Menghentikan Container
 Terminal menampilkan log akses HTTP dari IP *bridge network* Docker (`172.17.0.1`) dengan status `200`. Proses *container* kemudian dihentikan dengan menekan tombol **`Ctrl + C`** (`^C`).
 
-![Log Akses dan Penghentian Container](images/24-stop-docker-container.png)
+<img width="940" height="505" alt="image" src="https://github.com/user-attachments/assets/d125946c-cded-472b-8038-4ab03f077475" />
+
 
 ---
 
