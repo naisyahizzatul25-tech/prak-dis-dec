@@ -168,7 +168,6 @@ Berkas `01_hba.sh` disiapkan sebagai skrip Bash otomatisasi konfigurasi lapisan 
 <img width="940" height="110" alt="image" src="https://github.com/user-attachments/assets/d0344e77-f438-4e76-b990-dab272945d33" />
 <img width="940" height="128" alt="image" src="https://github.com/user-attachments/assets/07b20076-2eef-4606-88a4-963c6d0e33b5" />
 
-
 * **Pembahasan:**
   Eksekusi pengaktifan layanan berhasil menyalakan kontainer Publisher dan Subscriber hingga keduanya mencapai status `healthy`.
 
@@ -214,7 +213,6 @@ Berkas `01_hba.sh` disiapkan sebagai skrip Bash otomatisasi konfigurasi lapisan 
 
 ---
 
-
 ## Kesimpulan
 
 1. **Streaming Replication (Physical Replication):**
@@ -226,5 +224,5 @@ Berkas `01_hba.sh` disiapkan sebagai skrip Bash otomatisasi konfigurasi lapisan 
    * Bekerja pada tingkat objek/tabel (*row-level*) menggunakan arsitektur *Publisher-Subscriber*.
    * Memungkinkan replikasi data secara selektif (hanya tabel tertentu yang didaftarkan pada publikasi).
    * Node Subscriber bersifat **Read-Write**, sehingga tetap dapat menerima operasi manipulasi data lokal.
-   * Membutuhkan penyesuaian manual pada nilai *sequence* kolom auto-increment (`SERIAL`) jika dilakukan penulisan data lokal pada node Subscriber untuk menghindari konflik *Primary Key*.
+   * Membutuhkan penyesuaian manual pada nilai *sequence* kolom auto-increment (`SERIAL`) jika dilakukan penulisan data           lokal pada node Subscriber untuk menghindari konflik *Primary Key*.
    * Sangat ideal untuk skenario migrasi versi basis data, integrasi data antar sistem berbeda, serta konsolidasi data dari berbagai sumber.
