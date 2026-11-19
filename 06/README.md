@@ -8,8 +8,6 @@
 * **NIM:** 255410040
 * **Kelas:** Informatika IF 1 (Semester 3)
 * **Universitas:** Universitas Teknologi Digital Indonesia (UTDI
-  
-Repository ini berisi laporan praktikum mengenai langkah-langkah instalasi, pengonfigurasian, serta pengujian **Apache Hadoop Single-Node Cluster** (HDFS dan YARN) di lingkungan Windows Subsystem for Linux (WSL), hingga tahap manipulasi data file (*datasets*) pada HDFS.
 
 ---
 
