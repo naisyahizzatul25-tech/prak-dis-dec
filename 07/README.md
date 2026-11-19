@@ -49,7 +49,7 @@
 
 ### 3. Arsitektur Umum Layanan Cloud Computing (XaaS)
 
-![Arsitektur Umum Layanan Cloud Computing (XaaS)](images/00-arsitektur-xaas.png)
+<img width="940" height="592" alt="image" src="https://github.com/user-attachments/assets/5a22db92-06f0-4006-b759-3d27b7d55c11" />
 
 **Pembahasan Arsitektur:**  
 Diagram di atas membandingkan pembagian tanggung jawab pengelolaan 9 lapisan sistem (*Networking, Storage, Servers, Virtualization, Operating System, Middleware, Runtime, Data,* dan *Applications*) antara model tradisional (*On-Premises*) dan layanan *Cloud*:
