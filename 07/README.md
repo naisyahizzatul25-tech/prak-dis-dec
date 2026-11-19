@@ -1,12 +1,11 @@
 # Laporan Praktikum Sistem Terdistribusi dan Terdesentralisasi
 
 ## Modul 7: Cloud Computing & Containerized App (CA)
-
-**Mata Kuliah:** Praktikum Sistem Terdistribusi dan Terdesentralisasi  
-**Lingkungan Praktikum:** Windows Subsystem for Linux (WSL - Ubuntu) & Docker Desktop  
+ 
 **Nama:** Naisyah Izzatul Jannah K.  
 **NIM:** 255410040  
 **Prodi:** Informatika (IF 1) - Universitas Teknologi Digital Indonesia (UTDI)  
+**Mata Kuliah:** Praktikum Sistem Terdistribusi dan Terdesentralisasi  
 
 ---
 
